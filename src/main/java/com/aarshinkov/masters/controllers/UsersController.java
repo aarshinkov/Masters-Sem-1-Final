@@ -5,12 +5,13 @@ import com.aarshinkov.masters.models.users.UserCreateModel;
 import com.aarshinkov.masters.models.users.UserEditModel;
 import com.aarshinkov.masters.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@RestController
+@Controller
 public class UsersController {
 
     @Autowired
@@ -26,12 +27,12 @@ public class UsersController {
         return userService.getUsers();
     }
 
-    @PostMapping("/users")
+    @PostMapping("/users/create")
     public UserEntity createUser(@Valid @RequestBody UserCreateModel ucm) throws Exception {
         return userService.createUser(ucm);
     }
 
-    @PutMapping("/users")
+    @PostMapping("/users/edit")
     public UserEntity editUser(@RequestBody UserEditModel uem) throws Exception {
         return userService.editUser(uem);
     }

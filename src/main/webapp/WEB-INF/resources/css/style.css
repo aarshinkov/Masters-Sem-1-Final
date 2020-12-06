@@ -1,5 +1,14 @@
-.test {
-  color: #ff0000;
+.main-color-bg {
+  background: #ff8f00 !important;
+  color: #ffffff;
+}
+
+.main-color {
+  color: #ff8f00;
+}
+
+.icon-width {
+  min-width: 25px;
 }
 
 /*# sourceMappingURL=style.css.map */

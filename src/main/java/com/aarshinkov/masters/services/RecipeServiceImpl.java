@@ -1,5 +1,7 @@
 package com.aarshinkov.masters.services;
 
+import com.aarshinkov.masters.collections.ObjCollection;
+import com.aarshinkov.masters.collections.RecipesCollection;
 import com.aarshinkov.masters.entities.RecipeEntity;
 import com.aarshinkov.masters.entities.UserEntity;
 import com.aarshinkov.masters.models.recipes.RecipeCreateModel;
@@ -22,8 +24,14 @@ public class RecipeServiceImpl implements RecipeService {
     private UsersRepository usersRepository;
 
     @Override
-    public List<RecipeEntity> getRecipes() {
-        return recipesRepository.findAll();
+    public ObjCollection<RecipeEntity> getRecipes() {
+        List<RecipeEntity> recipes = recipesRepository.findAll();
+
+        ObjCollection<RecipeEntity> collection = new RecipesCollection<>();
+        collection.setCollection(recipes);
+        collection.setItemsCount((long) recipes.size());
+
+        return collection;
     }
 
     @Override

@@ -1,14 +1,12 @@
 package com.aarshinkov.masters.controllers;
 
+import com.aarshinkov.masters.collections.ObjCollection;
 import com.aarshinkov.masters.entities.RecipeEntity;
 import com.aarshinkov.masters.models.recipes.RecipeCreateModel;
 import com.aarshinkov.masters.models.recipes.RecipeUpdateModel;
 import com.aarshinkov.masters.services.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 @RestController
 public class RecipesController {
@@ -17,12 +15,13 @@ public class RecipesController {
     private RecipeService recipeService;
 
     @GetMapping("/recipes")
-    public List<RecipeEntity> getRecipes() {
+    public ObjCollection<RecipeEntity> getRecipes() {
         return recipeService.getRecipes();
     }
 
     @GetMapping("/recipes/{recipeId}")
     public RecipeEntity getRecipe(@PathVariable("recipeId") Long recipeId) {
+        System.out.println("HERE");
         return recipeService.getRecipeByRecipeId(recipeId);
     }
 

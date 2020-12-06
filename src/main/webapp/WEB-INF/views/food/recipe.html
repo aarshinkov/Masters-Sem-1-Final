@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{templates/template}">
+<head>
+    <title>Рецепти | Аз и готвенето</title>
+</head>
+<body>
+<div layout:fragment="contentDiv">
+
+    <div class="row">
+        <div class="col-12 col-md-9">
+            <div class="view overlay zoom mb-4">
+                <img src="https://recepti.gotvach.bg/files/lib/600x350/suh-mishmash.JPG" class="img-fluid w-100"
+                     alt="placeholder">
+                <div class="mask flex-center waves-effect waves-light rgba-orange-strong">
+                    <h2 id="recipeTitleOverlay" class="white-text"></h2>
+                </div>
+            </div>
+            <div class="d-flex">
+                <h3 id="recipeTitle" class="mr-auto"></h3>
+                <div id=""></div>
+            </div>
+            <hr/>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        let recipeId = /*[[${recipeId}]]*/;
+
+        /*]]>*/
+        function loadRecipe() {
+            $.ajax({
+                url: "/recipes/" + recipeId,
+                method: "GET",
+                success: function (recipe) {
+                    $("#recipeTitle").text(recipe.title);
+                    $("#recipeTitleOverlay").text(recipe.title);
+
+                }
+            });
+        }
+
+        loadRecipe();
+    </script>
+</div>
+</body>
+</html>

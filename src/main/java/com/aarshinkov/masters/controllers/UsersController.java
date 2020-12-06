@@ -8,32 +8,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
-@Controller
+//@Controller
+@RestController
 public class UsersController {
 
     @Autowired
     private UserService userService;
-
-    @GetMapping("/users/{userId}")
-    public UserEntity getUserByUserId(@PathVariable("userId") Long userId) {
-        return userService.getUserByUserId(userId);
-    }
 
     @GetMapping("/users")
     public List<UserEntity> getUsers() {
         return userService.getUsers();
     }
 
-    @PostMapping("/users/create")
-    public UserEntity createUser(@Valid @RequestBody UserCreateModel ucm) throws Exception {
+    @GetMapping("/users/{userId}")
+    public UserEntity getUser(@PathVariable("userId") Long userId) {
+        return userService.getUserByUserId(userId);
+    }
+
+    @PostMapping("/users")
+    public UserEntity createUser(@RequestBody UserCreateModel ucm) throws Exception {
         return userService.createUser(ucm);
     }
 
-    @PostMapping("/users/edit")
-    public UserEntity editUser(@RequestBody UserEditModel uem) throws Exception {
-        return userService.editUser(uem);
+    @PutMapping("/users")
+    public UserEntity updateUser(@RequestBody UserEditModel uem) throws Exception {
+        return userService.updateUser(uem);
+    }
+
+    @DeleteMapping("/users/{userId}")
+    public UserEntity deleteUser(@PathVariable("userId") Long userId) throws Exception {
+        return userService.deleteUser(userId);
     }
 }

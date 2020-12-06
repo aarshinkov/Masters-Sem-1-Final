@@ -4,11 +4,17 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{templates/template}">>
 <head>
-    <title>Home</title>
+    <title>Users</title>
 </head>
 <body>
 <div layout:fragment="contentDiv">
-    <p>Test</p>
+    <h2>Users</h2>
+    <hr/>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3" th:each="u : ${users}">
+            <p th:text="${u.firstName}"></p>
+        </div>
+    </div>
 </div>
 </body>
 </html>

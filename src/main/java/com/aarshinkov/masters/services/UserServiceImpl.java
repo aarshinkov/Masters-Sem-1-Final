@@ -1,5 +1,6 @@
 package com.aarshinkov.masters.services;
 
+import com.aarshinkov.masters.entities.RoleEntity;
 import com.aarshinkov.masters.entities.UserEntity;
 import com.aarshinkov.masters.models.users.UserCreateModel;
 import com.aarshinkov.masters.models.users.UserEditModel;
@@ -7,7 +8,9 @@ import com.aarshinkov.masters.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -39,11 +42,24 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(ucm.getFirstName());
         user.setLastName(ucm.getLastName());
 
+        Set<RoleEntity> roles = new HashSet<>();
+
+        for (String role : ucm.getRoles()) {
+            roles.add(new RoleEntity(role.toUpperCase()));
+        }
+
+        user.setRoles(roles);
+
         return usersRepository.save(user);
     }
 
     @Override
-    public UserEntity editUser(UserEditModel uem) throws Exception {
+    public UserEntity updateUser(UserEditModel uem) throws Exception {
+        return null;
+    }
+
+    @Override
+    public UserEntity deleteUser(Long userId) throws Exception {
         return null;
     }
 }

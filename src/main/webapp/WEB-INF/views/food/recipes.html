@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{templates/template}">
 <head>
@@ -7,78 +8,32 @@
 </head>
 <body>
 <div layout:fragment="contentDiv">
-    <h3>Рецепти (<span id="recipesCount"></span>)</h3>
+    <h3>Рецепти (<span th:remove="tag" th:text="${recipes.itemsCount}"></span>)</h3>
     <hr/>
 
-    <div id="recipes-list" class="row"></div>
-
-    <div id="cloneMe" class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" style="display: none;">
-        <div class="card">
-            <div class="view overlay">
-                <img class="card-img-top" src="https://recepti.gotvach.bg/files/lib/600x350/suh-mishmash.JPG"
-                     alt="Card image cap">
-                <a id="imageLink" href="#">
-                    <div class="mask rgba-white-slight"></div>
-                </a>
-            </div>
-            <div class="card-body">
-                <h4 class="card-title">
-                    <a id="recipeTitle" class="text-dark" href="#">Title</a>
-                </h4>
-                <p id="recipeText" class="card-text">Recipe</p>
-                <a id="readBtn" href="#" class="btn main-color-bg btn-sm ml-0">
-                    <i class="fab fa-readme"></i>
-                    <span>Прочети</span>
-                </a>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" th:each="r : ${recipes.collection}">
+            <div class="card">
+                <div class="view overlay">
+                    <img class="card-img-top" src="#" th:src="${r.imagePath}"
+                         alt="Card image cap">
+                    <a href="#" th:href="@{/recipe/} + ${r.recipeId}">
+                        <div class="mask rgba-white-slight"></div>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a class="text-dark" href="#" th:href="@{/recipe/} + ${r.recipeId}" th:text="${r.title}">Title</a>
+                    </h4>
+                    <p class="card-text" th:text="${r.recipe}">Recipe</p>
+                    <a href="#" th:href="@{/recipe/} + ${r.recipeId}" class="btn main-color-bg btn-sm ml-0">
+                        <i class="fab fa-readme"></i>
+                        <span>Прочети</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-
-    <script>
-        function loadRecipes() {
-            $.ajax({
-                url: "/recipes",
-                method: "GET",
-                success: function (list) {
-                    list.collection.forEach(function (data) {
-                        let miniMe = $('#cloneMe').clone();
-                        miniMe.removeAttr('id');
-                        miniMe.find('#recipeTitle').text(data.title);
-                        let recipeHref = '/recipe/' + data.recipeId;
-                        miniMe.find('#recipeTitle').attr('href', recipeHref);
-
-                        miniMe.find('#readBtn').attr('href', recipeHref);
-                        removeId(miniMe, '#readBtn');
-
-                        miniMe.find('#imageLink').attr('href', recipeHref);
-                        removeId(miniMe, '#imageLink');
-
-                        let recipeLength = data.recipe.length;
-
-                        if (recipeLength < 30) {
-                            miniMe.find('#recipeText').text(data.recipe.substring(0, 30));
-                        } else {
-                            miniMe.find('#recipeText').text(data.recipe);
-                        }
-
-                        removeId(miniMe, '#recipeText');
-
-                        $('#recipes-list').prepend(miniMe);
-                        miniMe.show();
-                    });
-                    $('#recipes-list').removeAttr('id');
-
-                    $("#recipesCount").text(list.itemsCount);
-                }
-            });
-        }
-
-        function removeId(cloner, selector) {
-            cloner.find(selector).removeAttr('id');
-        }
-
-        loadRecipes();
-    </script>
 </div>
 </body>
 </html>

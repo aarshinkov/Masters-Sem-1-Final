@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+<html lang="bg" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{templates/template}">
@@ -10,40 +10,122 @@
 <div layout:fragment="contentDiv">
 
     <div class="row">
-        <div class="col-12 col-md-9">
-            <div class="view overlay zoom mb-4">
-                <img src="https://recepti.gotvach.bg/files/lib/600x350/suh-mishmash.JPG" class="img-fluid w-100"
-                     alt="placeholder">
-                <div class="mask flex-center waves-effect waves-light rgba-orange-strong">
-                    <h2 id="recipeTitleOverlay" class="white-text"></h2>
+        <div class="col-12 col-lg-9">
+            <div class="d-flex align-items-end">
+                <h2 class="mr-auto mb-0" th:text="${recipe.title}">Title</h2>
+                <div class="d-none d-lg-block">
+                    <small class="far fa-clock"></small>
+                    <small class="text-muted mb-0"
+                           th:text="${#dates.format(recipe.createdOn, 'dd.MM.YYYY HH:mm')}"></small>
                 </div>
             </div>
-            <div class="d-flex">
-                <h3 id="recipeTitle" class="mr-auto"></h3>
-                <div id=""></div>
+
+            <div class="d-block d-lg-none">
+                <small class="far fa-clock"></small>
+                <small class="text-muted mb-0"
+                       th:text="${#dates.format(recipe.createdOn, 'dd.MM.YYYY HH:mm')}"></small>
             </div>
             <hr/>
+            <div class="view overlay zoom mb-4">
+                <img src="#" th:src="${recipe.imagePath}" class="img-fluid img-thumbnail rounded w-100"
+                     alt="placeholder">
+                <div class="mask flex-center waves-effect waves-light rgba-orange-strong">
+                    <h2 class="white-text" th:text="${recipe.title}">Title</h2>
+                </div>
+            </div>
+            <div class="d-inline-block mr-4">
+                <i class="fas fa-hourglass-start d-block text-center mb-2 icon-size-1"></i>
+                <strong class="d-block text-center">Приготвяне</strong>
+                <div class="d-block text-center">
+                    <span th:text="${recipe.prepareTime}"></span>
+                    <span>мин.</span>
+                </div>
+            </div>
+            <div class="d-inline-block mr-4">
+                <i class="fas fa-hourglass-half d-block text-center mb-2 icon-size-1"></i>
+                <strong class="d-block text-center">Готвене</strong>
+                <div class="d-block text-center">
+                    <span th:text="${recipe.cookingTime}"></span>
+                    <span>мин.</span>
+                </div>
+            </div>
+            <div class="d-inline-block mr-4">
+                <i class="far fa-clock d-block text-center mb-2 icon-size-1"></i>
+                <strong class="d-block text-center">Общо</strong>
+                <div class="d-block text-center">
+                    <span th:text="${recipe.prepareTime} + ${recipe.cookingTime}"></span>
+                    <span>мин.</span>
+                </div>
+            </div>
+            <div class="d-inline-block mr-4">
+                <i class="fas fa-utensils d-block text-center mb-2 icon-size-1"></i>
+                <strong class="d-block text-center">Порции</strong>
+                <div class="d-block text-center">
+                    <span th:text="${recipe.portions}"></span>
+                </div>
+            </div>
+
+            <hr/>
+
+            <h3 class="my-4">Необходими съставки</h3>
+            <ul class="recipe-item">
+                <li>Сирене</li>
+                <li>Чушки</li>
+            </ul>
+
+            <h3 class="my-4">Начин на приготвяне</h3>
+            <p th:text="${recipe.recipe}">Рецепта</p>
+        </div>
+        <div class="col-12 col-lg-3">
+            <div class="d-flex align-items-center">
+                <h2 class="mr-auto mb-0">Последни</h2>
+            </div>
+            <hr/>
+
+            <div id="sidePostsList" class="row">
+            </div>
         </div>
     </div>
 
+    <div id="cloner" class="col-12 mb-3" style="display: none;">
+        <a id="imageLink" href="#" class="d-flex align-items-start">
+            <img src="https://recepti.gotvach.bg/files/lib/600x350/suh-mishmash.JPG"
+                 class="img-fluid float-left mr-2" width="80" alt="..."/>
+            <div class="text-muted">
+                <div id="recipeTitle">Recipe title</div>
+                <small id="recipeCreatedOn">Created on</small>
+            </div>
+        </a>
+        <hr class="mb-0 mt-3"/>
+    </div>
+
     <script type="text/javascript" th:inline="javascript">
-        /*<![CDATA[*/
-        let recipeId = /*[[${recipeId}]]*/;
+        let lastRecipesCount = 3;
 
-        /*]]>*/
-        function loadRecipe() {
-            $.ajax({
-                url: "/recipes/" + recipeId,
-                method: "GET",
-                success: function (recipe) {
-                    $("#recipeTitle").text(recipe.title);
-                    $("#recipeTitleOverlay").text(recipe.title);
+        $.ajax({
+            url: "/recipes/lastN",
+            method: "GET",
+            data: {count: lastRecipesCount},
+            success: function (data) {
+                data.forEach(function (recipe) {
+                    console.log(recipe);
+                    let miniMe = $('#cloner').clone();
+                    miniMe.find('#imageLink').attr("href", "/recipe/" + recipe.recipeId);
+                    miniMe.find('#imageLink img').attr("src", recipe.imagePath);
 
-                }
-            });
-        }
+                    if (recipe.title.length > 20) {
+                        miniMe.find('#recipeTitle').text(recipe.title.substr(0, 17) + "...");
+                    } else {
+                        miniMe.find('#recipeTitle').text(recipe.title);
+                    }
 
-        loadRecipe();
+                    miniMe.find('#recipeCreatedOn').text(formatDate(recipe.createdOn));
+
+                    $('#sidePostsList').prepend(miniMe);
+                    miniMe.show();
+                });
+            }
+        });
     </script>
 </div>
 </body>

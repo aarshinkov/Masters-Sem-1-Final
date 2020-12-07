@@ -6,23 +6,51 @@ import com.aarshinkov.masters.models.recipes.RecipeCreateModel;
 import com.aarshinkov.masters.models.recipes.RecipeUpdateModel;
 import com.aarshinkov.masters.services.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+import java.util.List;
+
+@Controller
 public class RecipesController {
 
     @Autowired
     private RecipeService recipeService;
 
-    @GetMapping("/recipes")
-    public ObjCollection<RecipeEntity> getRecipes() {
-        return recipeService.getRecipes();
+    @GetMapping("/")
+    public String getRecipes(@RequestParam(value = "q", required = false) String query, Model model) {
+        ObjCollection<RecipeEntity> recipes;
+
+        if (query != null) {
+            recipes = recipeService.getRecipes(query);
+        } else {
+            recipes = recipeService.getRecipes();
+        }
+
+        model.addAttribute("recipes", recipes);
+
+        return "food/recipes";
     }
 
-    @GetMapping("/recipes/{recipeId}")
-    public RecipeEntity getRecipe(@PathVariable("recipeId") Long recipeId) {
-        System.out.println("HERE");
-        return recipeService.getRecipeByRecipeId(recipeId);
+    @GetMapping("/recipe/{recipeId}")
+    public String getRecipe(@PathVariable("recipeId") Long recipeId, Model model) {
+        RecipeEntity recipe = recipeService.getRecipeByRecipeId(recipeId);
+
+        model.addAttribute("recipe", recipe);
+
+        return "food/recipe";
+    }
+
+    @GetMapping(value = "/recipes/lastN", params = "count")
+    @ResponseBody
+    public List<RecipeEntity> lastNPublishedRecipes(@RequestParam("count") Integer count) {
+        return recipeService.getLastNRecipes(count);
+    }
+
+    @GetMapping("/recipe/create")
+    public String openCreateRecipe() {
+        return "food/create";
     }
 
     @PostMapping("/recipes")

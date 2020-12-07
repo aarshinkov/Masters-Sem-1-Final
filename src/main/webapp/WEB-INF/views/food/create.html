@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{templates/template}">
+<head>
+    <title>Рецепти | Аз и готвенето</title>
+</head>
+<body>
+<div layout:fragment="contentDiv">
+
+    <div class="row">
+        <div class="col-12">
+
+        </div>
+    </div>
+
+    <div id="cloner" class="col-12 mb-3" style="display: none;">
+        <a id="imageLink" href="#" class="d-flex align-items-start">
+            <img src="https://recepti.gotvach.bg/files/lib/600x350/suh-mishmash.JPG"
+                 class="img-fluid float-left mr-2" width="80" alt="..."/>
+            <div class="text-muted">
+                <div id="recipeTitle">Recipe title</div>
+                <small id="recipeCreatedOn">Created on</small>
+            </div>
+        </a>
+        <hr class="mb-0 mt-3"/>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+        // let lastRecipesCount = 3;
+        //
+        // $.ajax({
+        //     url: "/recipes/lastN",
+        //     method: "GET",
+        //     data: {count: lastRecipesCount},
+        //     success: function (data) {
+        //         data.forEach(function (recipe) {
+        //             console.log(recipe);
+        //             let miniMe = $('#cloner').clone();
+        //             miniMe.find('#imageLink').attr("href", "/recipe/" + recipe.recipeId);
+        //             miniMe.find('#imageLink img').attr("src", recipe.imagePath);
+        //
+        //             if (recipe.title.length > 20) {
+        //                 miniMe.find('#recipeTitle').text(recipe.title.substr(0, 17) + "...");
+        //             } else {
+        //                 miniMe.find('#recipeTitle').text(recipe.title);
+        //             }
+        //
+        //             miniMe.find('#recipeCreatedOn').text(formatDate(recipe.createdOn));
+        //
+        //             $('#sidePostsList').prepend(miniMe);
+        //             miniMe.show();
+        //         });
+        //     }
+        // });
+    </script>
+</div>
+</body>
+</html>

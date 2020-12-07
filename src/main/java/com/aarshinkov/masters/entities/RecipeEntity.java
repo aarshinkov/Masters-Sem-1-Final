@@ -37,6 +37,9 @@ public class RecipeEntity implements Serializable {
     @Column(name = "recipe")
     private String recipe;
 
+    @Column(name = "image_path")
+    private String imagePath;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonIgnore

@@ -2,6 +2,7 @@ package com.aarshinkov.masters.services;
 
 import com.aarshinkov.masters.collections.ObjCollection;
 import com.aarshinkov.masters.collections.RecipesCollection;
+import com.aarshinkov.masters.dao.RecipesDao;
 import com.aarshinkov.masters.entities.RecipeEntity;
 import com.aarshinkov.masters.entities.UserEntity;
 import com.aarshinkov.masters.models.recipes.RecipeCreateModel;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -21,7 +23,21 @@ public class RecipeServiceImpl implements RecipeService {
     private RecipesRepository recipesRepository;
 
     @Autowired
+    private RecipesDao recipesDao;
+
+    @Autowired
     private UsersRepository usersRepository;
+
+    @Override
+    public ObjCollection<RecipeEntity> getRecipes(String query) {
+        List<RecipeEntity> recipes = recipesRepository.findByTitleContainingIgnoreCase(query);
+
+        ObjCollection<RecipeEntity> collection = new RecipesCollection<>();
+        collection.setCollection(recipes);
+        collection.setItemsCount((long) recipes.size());
+
+        return collection;
+    }
 
     @Override
     public ObjCollection<RecipeEntity> getRecipes() {
@@ -37,6 +53,11 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public RecipeEntity getRecipeByRecipeId(Long recipeId) {
         return recipesRepository.findByRecipeId(recipeId);
+    }
+
+    @Override
+    public List<RecipeEntity> getLastNRecipes(Integer count) {
+        return recipesDao.getLastNRecipes(count);
     }
 
     @Override

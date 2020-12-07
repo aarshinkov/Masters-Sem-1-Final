@@ -17,5 +17,6 @@ public class RecipeCreateModel implements Serializable {
     private Integer portions;
     private String title;
     private String recipe;
+    private String imagePath;
     private Long userId;
 }

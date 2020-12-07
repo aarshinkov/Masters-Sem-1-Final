@@ -17,9 +17,9 @@
                 <!--                        <span>Начало</span>-->
                 <!--                    </a>-->
                 <!--                </li>-->
-                <form class="form-inline">
+                <form th:action="@{/}" class="form-inline">
                     <div class="md-form my-0">
-                        <input class="form-control" type="text" size="50" name="f" placeholder="Търси рецепта..."/>
+                        <input class="form-control" type="text" size="50" name="q" th:value="${#request.getParameter('q')}" placeholder="Търси рецепта..."/>
                     </div>
                 </form>
                 <!--                <li class="nav-item" th:classappend="${globalMenu eq 'recipes'} ? 'active'">-->

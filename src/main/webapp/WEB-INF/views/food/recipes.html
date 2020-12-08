@@ -8,10 +8,28 @@
 </head>
 <body>
 <div layout:fragment="contentDiv">
-    <h3>Рецепти (<span th:remove="tag" th:text="${recipes.itemsCount}"></span>)</h3>
+    <div class="d-flex align-items-center">
+        <h3 class="mb-0 mr-auto">Рецепти</h3>
+        <strong class="mb-0" th:if="${recipes.itemsCount eq 1}">
+            <span>Намерена</span>
+            <span th:remove="tag" th:text="${recipes.itemsCount}">1</span>
+            <span>рецепта</span>
+        </strong>
+        <strong class="mb-0" th:if="${recipes.itemsCount gt 1}">
+            <span>Намерени</span>
+            <span th:remove="tag" th:text="${recipes.itemsCount}">4</span>
+            <span>рецепти</span>
+        </strong>
+    </div>
     <hr/>
 
-    <div class="row">
+    <div class="row" th:if="${recipes.itemsCount eq 0}">
+        <div class="col-12">
+            <h4>Няма намерени рецепти</h4>
+        </div>
+    </div>
+
+    <div class="row" th:if="${recipes.itemsCount ne 0}">
         <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" th:each="r : ${recipes.collection}">
             <div class="card">
                 <div class="view overlay">
@@ -23,7 +41,8 @@
                 </div>
                 <div class="card-body">
                     <h4 class="card-title">
-                        <a class="text-dark" href="#" th:href="@{/recipe/} + ${r.recipeId}" th:text="${r.title}">Title</a>
+                        <a class="text-dark" href="#" th:href="@{/recipe/} + ${r.recipeId}"
+                           th:text="${r.title}">Title</a>
                     </h4>
                     <p class="card-text" th:text="${r.recipe}">Recipe</p>
                     <a href="#" th:href="@{/recipe/} + ${r.recipeId}" class="btn main-color-bg btn-sm ml-0">

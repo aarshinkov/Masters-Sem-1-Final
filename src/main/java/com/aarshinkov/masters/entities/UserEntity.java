@@ -38,4 +38,8 @@ public class UserEntity implements Serializable {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<RecipeEntity> recipes;
+
+    public String getFullName() {
+        return lastName ==   null ? firstName : firstName + " " + lastName;
+    }
 }

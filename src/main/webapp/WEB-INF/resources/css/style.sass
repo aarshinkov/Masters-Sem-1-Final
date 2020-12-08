@@ -1,2 +1,25 @@
-.test
-  color: #ff0000
+$main-color: #ff8f00
+
+.main-color-bg
+  background: $main-color !important
+  color: #ffffff
+
+.main-color
+  color: $main-color
+
+.icon-width
+  min-width: 25px
+
+.icon-size-1
+  font-size: 33px
+
+ul.recipe-item
+  list-style: none
+
+ul.recipe-item li::before
+  content: "\2022"
+  color: $main-color
+  font-weight: bold
+  display: inline-block
+  width: 1em
+  margin-left: -1em

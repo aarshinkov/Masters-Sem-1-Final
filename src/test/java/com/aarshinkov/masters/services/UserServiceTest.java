@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,7 +69,7 @@ public class UserServiceTest {
     @Test
     public void getUserByUserId_ReturnEntity_IfIdValid() {
 
-        UserEntity user = new UserEntity(1L, "test@gmail.com", "Test-1234", "Atanas", "Arshinkov");
+        UserEntity user = new UserEntity(1L, "test@gmail.com", "Test-1234", "Atanas", "Arshinkov", new HashSet<>(), new ArrayList<>());
 
         given(usersRepository.findByUserId(anyLong())).willReturn(user);
 

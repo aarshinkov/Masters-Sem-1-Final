@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{templates/template}">
+<head>
+    <title>Рецепти | Готвач БГ</title>
+</head>
+<body>
+<div layout:fragment="contentDiv">
+    <div class="d-flex align-items-center">
+        <h3 class="mb-0 mr-auto">Рецепти</h3>
+        <!--        <strong class="mb-0" th:if="${recipes.itemsCount eq 1}">-->
+        <!--            <span>Намерена</span>-->
+        <!--            <span th:remove="tag" th:text="${recipes.itemsCount}">1</span>-->
+        <!--            <span>рецепта</span>-->
+        <!--        </strong>-->
+        <!--        <strong class="mb-0" th:if="${recipes.itemsCount gt 1}">-->
+        <!--            <span>Намерени</span>-->
+        <!--            <span th:remove="tag" th:text="${recipes.itemsCount}">4</span>-->
+        <!--            <span>рецепти</span>-->
+        <!--        </strong>-->
+    </div>
+    <hr/>
+
+    <!--    <div class="row">-->
+    <!--        <div class="col-12">-->
+    <!--            <h4>Няма намерени рецепти</h4>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
+    <div id="recipesContainer" class="row"></div>
+
+    <div id="cloner" class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" style="display: none;">
+        <div class="card">
+            <div class="view overlay">
+                <img id="recipeImage" class="card-img-top" src="#" alt="Card image cap">
+                <a href="#" class="recipeLink">
+                    <div class="mask rgba-white-slight"></div>
+                </a>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">
+                    <a id="recipeTitle" class="text-dark recipeLink" href="#">Title</a>
+                </h4>
+                <p id="recipeText" class="card-text">Recipe</p>
+                <a href="#" class="btn main-color-bg btn-sm ml-0 recipeLink">
+                    <i class="fab fa-readme"></i>
+                    <span>Прочети</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        let urlParam = /*[[${param.q}]]*/;
+        /*]]>*/
+
+        let requestUrl = "/api/recipes";
+
+        if (urlParam !== null || urlParam) {
+            requestUrl = "/api/recipes?q=" + urlParam;
+        }
+
+        $.ajax({
+            url: requestUrl,
+            method: "GET",
+            success: function (data) {
+                data.collection.forEach(function (item) {
+                    let clone = $('#cloner').clone();
+                    clone.removeAttr('id');
+                    clone.removeAttr("style");
+                    clone.find('#recipeImage').attr("src", item.imagePath);
+                    clone.find('#recipeTitle').text(item.title);
+                    clone.find('.recipeLink').attr('href', "/recipe/" + item.recipeId);
+
+                    const recipeText = item.recipe;
+                    const maxTextLength = 30;
+
+                    if (recipeText.length > maxTextLength) {
+                        clone.find('#recipeText').text(item.recipe.substr(0, maxTextLength - 3) + "...");
+                    } else {
+                        clone.find('#recipeText').text(item.recipe);
+                    }
+
+                    $('#recipesContainer').append(clone);
+                    clone.show();
+                });
+
+                $('#recipesContainer').removeAttr('id');
+            }
+        });
+    </script>
+</div>
+</body>
+</html>

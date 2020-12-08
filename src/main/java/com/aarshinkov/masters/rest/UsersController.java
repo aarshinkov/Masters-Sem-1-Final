@@ -1,4 +1,4 @@
-package com.aarshinkov.masters.controllers;
+package com.aarshinkov.masters.rest;
 
 import com.aarshinkov.masters.entities.UserEntity;
 import com.aarshinkov.masters.models.users.UserCreateModel;
@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class UsersController {
 
     @Autowired
@@ -32,7 +33,12 @@ public class UsersController {
     }
 
     @PutMapping("/users")
-    public UserEntity editUser(@RequestBody UserEditModel uem) throws Exception {
-        return userService.editUser(uem);
+    public UserEntity updateUser(@RequestBody UserEditModel uem) throws Exception {
+        return userService.updateUser(uem);
+    }
+
+    @DeleteMapping("/users/{userId}")
+    public UserEntity deleteUser(@PathVariable("userId") Long userId) throws Exception {
+        return userService.deleteUser(userId);
     }
 }

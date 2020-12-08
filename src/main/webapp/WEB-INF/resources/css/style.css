@@ -1,5 +1,32 @@
-.test {
-  color: #ff0000;
+@charset "UTF-8";
+.main-color-bg {
+  background: #ff8f00 !important;
+  color: #ffffff;
+}
+
+.main-color {
+  color: #ff8f00;
+}
+
+.icon-width {
+  min-width: 25px;
+}
+
+.icon-size-1 {
+  font-size: 33px;
+}
+
+ul.recipe-item {
+  list-style: none;
+}
+
+ul.recipe-item li::before {
+  content: "•";
+  color: #ff8f00;
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
 }
 
 /*# sourceMappingURL=style.css.map */

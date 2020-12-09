@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{templates/template}">
 <head>
@@ -10,24 +11,13 @@
 <div layout:fragment="contentDiv">
     <div class="d-flex align-items-center">
         <h3 class="mb-0 mr-auto">Рецепти</h3>
-        <!--        <strong class="mb-0" th:if="${recipes.itemsCount eq 1}">-->
-        <!--            <span>Намерена</span>-->
-        <!--            <span th:remove="tag" th:text="${recipes.itemsCount}">1</span>-->
-        <!--            <span>рецепта</span>-->
-        <!--        </strong>-->
-        <!--        <strong class="mb-0" th:if="${recipes.itemsCount gt 1}">-->
-        <!--            <span>Намерени</span>-->
-        <!--            <span th:remove="tag" th:text="${recipes.itemsCount}">4</span>-->
-        <!--            <span>рецепти</span>-->
-        <!--        </strong>-->
+        <a sec:authorize="isAuthenticated()" href="@{/recipe/create}" class="btn btn-sm btn-outline-orange"
+           data-toggle="modal" data-target="#createRecipeModal">
+            <i class="fas fa-plus"></i>
+            <span>Нова рецепта</span>
+        </a>
     </div>
     <hr/>
-
-    <!--    <div class="row">-->
-    <!--        <div class="col-12">-->
-    <!--            <h4>Няма намерени рецепти</h4>-->
-    <!--        </div>-->
-    <!--    </div>-->
 
     <div id="recipesContainer" class="row"></div>
 
@@ -52,9 +42,70 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" sec:authorize="isAuthenticated()" id="createRecipeModal" tabindex="-1" aria-labelledby="createRecipeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createRecipeModalLabel">Създаване на рецепта</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="recipeCreateForm">
+                        <div class="form-group">
+                            <label for="modalRecipeTitle">Заглавие</label>
+                            <input id="modalRecipeTitle" type="text" name="title" class="form-control"
+                                   required="required"/>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="modalRecipePrepare">Време за потготовка (мин)</label>
+                                <input id="modalRecipePrepare" type="number" min="1" name="prepareTime"
+                                       class="form-control" value="10"
+                                       required="required"/>
+                            </div>
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="modalRecipeCooking">Време за готвене (мин)</label>
+                                <input id="modalRecipeCooking" type="number" min="1" name="cookingTime"
+                                       class="form-control" value="15"
+                                       required="required"/>
+                            </div>
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="modalRecipePortions">Порции (брой)</label>
+                                <input id="modalRecipePortions" type="number" min="1" name="portions"
+                                       class="form-control" value="4"
+                                       required="required"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="modalRecipeRecipe">Рецепта</label>
+                            <textarea id="modalRecipeRecipe" class="form-control" name="recipe"
+                                      style="min-height: 400px;"></textarea>
+                        </div>
+                        <input id="modalUserId" type="hidden" name="userId" th:value="${#session.getAttribute('user').userId}"/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" onclick="createRecipe()" class="btn btn-orange btn-md">
+                        <i class="fas fa-save"></i>
+                        <span>Запази</span>
+                    </a>
+                    <button type="button" class="btn btn-outline-dark btn-md" data-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        <span>Затвори</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         let urlParam = /*[[${param.q}]]*/;
+        let recipeCreateUrl = /*[[@{/api/recipes}]]*/;
         /*]]>*/
 
         let requestUrl = "/api/recipes";
@@ -90,6 +141,43 @@
 
                 $('#recipesContainer').removeAttr('id');
             }
+        })
+
+        function createRecipe() {
+            let title = $("#modalRecipeTitle").val();
+            let prepareTime = $("#modalRecipePrepare").val();
+            let cookingTime = $("#modalRecipeCooking").val();
+            let portions = $("#modalRecipePortions").val();
+            tinyMCE.triggerSave();
+            let recipe = $("#modalRecipeRecipe").val();
+            let userId = $("#modalUserId").val();
+
+            // TODO VALIDATION
+            let submitData = JSON.stringify($("#recipeCreateForm").serializeArray());
+            // alert(submitData);
+
+            $.ajax({
+                url: recipeCreateUrl,
+                method: "POST",
+                data: submitData,
+                // data: {
+                //     prepareTime: prepareTime,
+                //     cookingTime: cookingTime,
+                //     portions: portions,
+                //     title: title,
+                //     recipe: recipe,
+                //     userId: userId
+                // },
+                success: function (result) {
+                    console.log(result);
+                }
+            });
+        }
+    </script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            min_height: 500
         });
     </script>
 </div>

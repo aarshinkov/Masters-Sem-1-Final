@@ -29,4 +29,14 @@ ul.recipe-item li::before {
   margin-left: -1em;
 }
 
+.list-group-item.active {
+  background-color: #ff8f00;
+  border-color: #ff8f00;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  background-color: #ff8f00;
+  border-color: #ff8f00;
+}
+
 /*# sourceMappingURL=style.css.map */

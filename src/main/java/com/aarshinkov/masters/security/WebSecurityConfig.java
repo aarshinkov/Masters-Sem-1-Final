@@ -2,7 +2,6 @@ package com.aarshinkov.masters.security;
 
 import com.aarshinkov.masters.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,10 +27,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/**").permitAll()
-                .requestMatchers(EndpointRequest.toAnyEndpoint())
-                .permitAll()
+        http.authorizeRequests()
+                .antMatchers("/login").anonymous()
+                .antMatchers("/signup").anonymous()
+                .antMatchers("/profile").authenticated()
+                .and()
+                .formLogin().loginPage("/login")
+                .and()
+                .logout().logoutUrl("/logout")
                 .and().csrf().disable();
-        http.headers().frameOptions().disable();
     }
+
+    //    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.authorizeRequests().antMatchers("/**").permitAll()
+//                .requestMatchers(EndpointRequest.toAnyEndpoint())
+//                .permitAll()
+//                .and()
+//                .logout().logoutUrl("/logout")
+//                .and()
+//                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+//                .and().csrf().disable();
+//        http.headers().frameOptions().disable();
+//    }
 }

@@ -41,7 +41,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public ObjCollection<RecipeEntity> getRecipes() {
-        List<RecipeEntity> recipes = recipesRepository.findAll();
+        List<RecipeEntity> recipes = recipesRepository.findAllByOrderByCreatedOnDesc();
 
         ObjCollection<RecipeEntity> collection = new RecipesCollection<>();
         collection.setCollection(recipes);
@@ -94,6 +94,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipe.setPortions(rum.getPortions());
         recipe.setTitle(rum.getTitle());
         recipe.setRecipe(rum.getRecipe());
+        recipe.setImagePath(rum.getImagePath());
 
         UserEntity author = usersRepository.findByUserId(rum.getUserId());
 

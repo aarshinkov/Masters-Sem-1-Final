@@ -46,14 +46,15 @@
                         </a>
                     </li>
                 </div>
-                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()" th:classappend="${globalMenu eq 'profile'} ? 'active'">
                     <a class="nav-link dropdown-toggle" id="userDropdown" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
                         <i class="far fa-user"></i>
                         <span th:text="${#session.getAttribute('user').fullName}">John Doe</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="#" th:href="@{/profile}"
+                           th:classappend="${submenu eq 'profile'} ? 'active'">
                             <i class="fas fa-user icon-width"></i>
                             <span>Профил</span>
                         </a>
@@ -62,7 +63,7 @@
                             <span>Настройки</span>
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger" href="#">
+                        <a class="dropdown-item text-danger" href="#" th:href="@{/logout}">
                             <i class="fas fa-sign-out-alt icon-width"></i>
                             <span>Изход</span>
                         </a>

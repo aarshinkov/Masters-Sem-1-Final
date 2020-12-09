@@ -38,7 +38,9 @@ public class RecipesController {
 
     @PostMapping("/recipes")
     public RecipeEntity createRecipe(@RequestBody RecipeCreateModel rcm) throws Exception {
-        return recipeService.createRecipe(rcm);
+        System.out.println(rcm);
+//        return recipeService.createRecipe(rcm);
+        return new RecipeEntity();
     }
 
     @PutMapping("/recipes")

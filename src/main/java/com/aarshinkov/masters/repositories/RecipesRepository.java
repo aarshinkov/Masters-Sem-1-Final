@@ -8,7 +8,9 @@ import java.util.List;
 
 @Repository
 public interface RecipesRepository extends JpaRepository<RecipeEntity, Long> {
-    RecipeEntity findByRecipeId(Long recipeId);
+    List<RecipeEntity> findAllByOrderByCreatedOnDesc();
 
     List<RecipeEntity> findByTitleContainingIgnoreCase(String title);
+
+    RecipeEntity findByRecipeId(Long recipeId);
 }

@@ -30,10 +30,13 @@
                 </a>
             </div>
             <div class="card-body">
-                <h4 class="card-title">
+                <h5 class="card-title">
                     <a id="recipeTitle" class="text-dark recipeLink" href="#">Title</a>
-                </h4>
-                <p id="recipeText" class="card-text">Recipe</p>
+                </h5>
+                <div class="card-text mb-2">
+                    <small class="far fa-clock"></small>
+                    <small id="recipeCreatedOn" class="text-muted mb-0">Created on</small>
+                </div>
                 <a href="#" class="btn main-color-bg btn-sm ml-0 recipeLink">
                     <i class="fab fa-readme"></i>
                     <span>Прочети</span>
@@ -43,7 +46,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" sec:authorize="isAuthenticated()" id="createRecipeModal" tabindex="-1" aria-labelledby="createRecipeModalLabel"
+    <div class="modal fade" sec:authorize="isAuthenticated()" id="createRecipeModal" tabindex="-1"
+         aria-labelledby="createRecipeModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-xl">
             <div class="modal-content">
@@ -81,11 +85,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="modalRecipeImage">Изображение (линк)</label>
+                            <input id="modalRecipeImage" type="text" name="imagePath" class="form-control"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group">
                             <label for="modalRecipeRecipe">Рецепта</label>
                             <textarea id="modalRecipeRecipe" class="form-control" name="recipe"
                                       style="min-height: 400px;"></textarea>
                         </div>
-                        <input id="modalUserId" type="hidden" name="userId" th:value="${#session.getAttribute('user').userId}"/>
+                        <input id="modalUserId" type="hidden" name="userId"
+                               th:value="${#session.getAttribute('user').userId}"/>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -106,6 +116,7 @@
         /*<![CDATA[*/
         let urlParam = /*[[${param.q}]]*/;
         let recipeCreateUrl = /*[[@{/api/recipes}]]*/;
+        let homeUrl = /*[[@{/}]]*/;
         /*]]>*/
 
         let requestUrl = "/api/recipes";
@@ -125,15 +136,7 @@
                     clone.find('#recipeImage').attr("src", item.imagePath);
                     clone.find('#recipeTitle').text(item.title);
                     clone.find('.recipeLink').attr('href', "/recipe/" + item.recipeId);
-
-                    const recipeText = item.recipe;
-                    const maxTextLength = 30;
-
-                    if (recipeText.length > maxTextLength) {
-                        clone.find('#recipeText').text(item.recipe.substr(0, maxTextLength - 3) + "...");
-                    } else {
-                        clone.find('#recipeText').text(item.recipe);
-                    }
+                    clone.find('#recipeCreatedOn').text(formatDate(item.createdOn));
 
                     $('#recipesContainer').append(clone);
                     clone.show();
@@ -148,28 +151,27 @@
             let prepareTime = $("#modalRecipePrepare").val();
             let cookingTime = $("#modalRecipeCooking").val();
             let portions = $("#modalRecipePortions").val();
+            let imagePath = $("#modalRecipeImage").val();
             tinyMCE.triggerSave();
             let recipe = $("#modalRecipeRecipe").val();
             let userId = $("#modalUserId").val();
 
             // TODO VALIDATION
-            let submitData = JSON.stringify($("#recipeCreateForm").serializeArray());
-            // alert(submitData);
 
             $.ajax({
                 url: recipeCreateUrl,
                 method: "POST",
-                data: submitData,
-                // data: {
-                //     prepareTime: prepareTime,
-                //     cookingTime: cookingTime,
-                //     portions: portions,
-                //     title: title,
-                //     recipe: recipe,
-                //     userId: userId
-                // },
+                data: {
+                    prepareTime: prepareTime,
+                    cookingTime: cookingTime,
+                    portions: portions,
+                    imagePath: imagePath,
+                    title: title,
+                    recipe: recipe,
+                    userId: userId
+                },
                 success: function (result) {
-                    console.log(result);
+                    window.location.href = homeUrl;
                 }
             });
         }

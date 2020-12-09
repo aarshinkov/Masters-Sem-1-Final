@@ -8,16 +8,19 @@
 </head>
 <body>
 <div layout:fragment="contentDiv">
-
     <div class="row">
+        <div class="col-12">
+            <h3>Вход</h3>
+            <hr/>
+        </div>
         <div class="col-12">
             <div id="errorAlert" class="alert alert-danger d-none"></div>
         </div>
         <div class="col-12">
-            <form>
+            <form id="loginForm">
                 <div class="form-group">
                     <label for="emailInput">Имейл</label>
-                    <input id="emailInput" type="email" class="form-control"/>
+                    <input id="emailInput" type="email" class="form-control" autofocus="autofocus"/>
                     <span id="emailError" class="invalid-feedback"></span>
                 </div>
                 <div class="form-group">
@@ -25,9 +28,13 @@
                     <input id="passwordInput" type="password" class="form-control" autocomplete="off"/>
                     <span id="passwordError" class="invalid-feedback"></span>
                 </div>
-                <a onclick="login()" class="btn btn-orange btn-sm ml-0">
+                <button type="submit" class="btn btn-orange btn-sm ml-0">
                     <i class="fas fa-sign-in-alt"></i>
                     <span>Вход</span>
+                </button>
+                <span>Нямате регистрация?</span>
+                <a href="#" th:href="@{/signup}" class="ml-0">
+                    <span>Регистрация</span>
                 </a>
             </form>
         </div>
@@ -37,9 +44,12 @@
         /*<![CDATA[*/
         let loginUrl = /*[[@{/api/login}]]*/;
         let homeUrl = /*[[@{/}]]*/;
+
         /*]]>*/
 
-        function login() {
+        $('#loginForm').submit(function (e) {
+            e.preventDefault();
+
             clearErrorAlert();
             let email = $("#emailInput").val();
             let password = $("#passwordInput").val();
@@ -74,12 +84,12 @@
                     let code = error.responseJSON.code;
                     if (code === 404 || code === 4001) {
                         setErrorAlert("Неправилни имейл/парола");
-                    // } else if (code === 4001) {
-                    //     setErrorAlert("Имейлът не е регистриран в системата");
+                        // } else if (code === 4001) {
+                        //     setErrorAlert("Имейлът не е регистриран в системата");
                     }
                 }
             });
-        }
+        });
 
         function clearErrorAlert() {
             let selector = $("#errorAlert");

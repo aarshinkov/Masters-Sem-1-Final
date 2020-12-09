@@ -75,6 +75,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipe.setPortions(rcm.getPortions());
         recipe.setTitle(rcm.getTitle());
         recipe.setRecipe(rcm.getRecipe());
+        recipe.setImagePath(rcm.getImagePath());
         recipe.setUser(user);
 
         return recipesRepository.save(recipe);

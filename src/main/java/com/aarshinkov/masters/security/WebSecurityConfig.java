@@ -36,18 +36,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().logoutUrl("/logout")
                 .and().csrf().disable();
+        http.headers().frameOptions().disable();
     }
-
-    //    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.authorizeRequests().antMatchers("/**").permitAll()
-//                .requestMatchers(EndpointRequest.toAnyEndpoint())
-//                .permitAll()
-//                .and()
-//                .logout().logoutUrl("/logout")
-//                .and()
-//                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
-//                .and().csrf().disable();
-//        http.headers().frameOptions().disable();
-//    }
 }

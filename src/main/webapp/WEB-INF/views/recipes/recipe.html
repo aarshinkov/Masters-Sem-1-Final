@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="bg" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{templates/template}">
 <head>
@@ -11,18 +12,25 @@
 
     <div class="row">
         <div class="col-12 col-lg-9">
-            <div class="d-flex align-items-end">
-                <h2 class="mr-auto mb-0 recipeTitle"></h2>
-                <div class="d-none d-lg-block">
+            <div class="d-flex align-items-center">
+                <div class="mr-auto">
+                    <h2 class="mb-0 recipeTitle"></h2>
+                    <div class=""
+                         th:classappend="${#authorization.expression('!isAuthenticated()')} ? 'd-block d-lg-none'">
+                        <small class="far fa-clock"></small>
+                        <small class="text-muted mb-0 recipeCreatedOn">Created on</small>
+                    </div>
+                </div>
+                <div class="d-none d-lg-block" sec:authorize="!isAuthenticated">
                     <small class="far fa-clock"></small>
                     <small class="text-muted mb-0 recipeCreatedOn">Created on</small>
                 </div>
+                <a href="#" class="btn btn-sm btn-outline-orange" sec:authorize="isAuthenticated">
+                    <i class="fas fa-edit"></i>
+                    <span>Редактирай</span>
+                </a>
             </div>
 
-            <div class="d-block d-lg-none">
-                <small class="far fa-clock"></small>
-                <small class="text-muted mb-0 recipeCreatedOn">Created on</small>
-            </div>
             <hr/>
             <div class="view overlay zoom mb-4">
                 <img id="recipeImage" src="#" class="img-fluid img-thumbnail rounded w-100"
@@ -72,7 +80,7 @@
             </ul>
 
             <h3 class="my-4">Начин на приготвяне</h3>
-            <p>Рецепта</p>
+            <p id="recipeRecipe">Рецепта</p>
         </div>
         <div class="col-12 col-lg-3">
             <div class="d-flex align-items-center">
@@ -120,6 +128,7 @@
                 $('#recipeCooking').text(data.cookingTime);
                 $('#recipeTotal').text(data.prepareTime + data.cookingTime);
                 $('#recipePortions').text(data.portions);
+                $('#recipeRecipe').html(data.recipe);
             }
         });
 

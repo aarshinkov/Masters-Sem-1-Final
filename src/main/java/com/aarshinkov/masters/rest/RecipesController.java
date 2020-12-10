@@ -18,9 +18,21 @@ public class RecipesController {
     private RecipeService recipeService;
 
     @GetMapping("/recipes")
-    public ObjCollection<RecipeEntity> getRecipes(@RequestParam(value = "q", required = false) String query) {
-        if (query != null) {
-            return recipeService.getRecipes(query);
+    public ObjCollection<RecipeEntity> getRecipes(@RequestParam(value = "t", required = false) String title,
+                                                  @RequestParam(value = "cat", required = false) Long categoryId) {
+
+        if (title != null) {
+            if (!title.isEmpty() && categoryId != null) {
+                return recipeService.getRecipesByTitleAndCategory(title, categoryId);
+            }
+
+            if (!title.isEmpty()) {
+                return recipeService.getRecipesByTitle(title);
+            }
+        }
+
+        if (categoryId != null) {
+            return recipeService.getRecipesByCategory(categoryId);
         }
 
         return recipeService.getRecipes();

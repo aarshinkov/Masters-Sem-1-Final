@@ -33,30 +33,36 @@ public class RecipeServiceImpl implements RecipeService {
     private CategoriesRepository categoriesRepository;
 
     @Override
-    public ObjCollection<RecipeEntity> getRecipes(String query) {
-        List<RecipeEntity> recipes = recipesRepository.findByTitleContainingIgnoreCase(query);
-
-        ObjCollection<RecipeEntity> collection = new RecipesCollection<>();
-        collection.setCollection(recipes);
-        collection.setItemsCount((long) recipes.size());
-
-        return collection;
-    }
-
-    @Override
     public ObjCollection<RecipeEntity> getRecipes() {
         List<RecipeEntity> recipes = recipesRepository.findAllByOrderByCreatedOnDesc();
 
-        ObjCollection<RecipeEntity> collection = new RecipesCollection<>();
-        collection.setCollection(recipes);
-        collection.setItemsCount((long) recipes.size());
-
-        return collection;
+        return getCollectionFromList(recipes);
     }
 
     @Override
     public RecipeEntity getRecipeByRecipeId(Long recipeId) {
         return recipesRepository.findByRecipeId(recipeId);
+    }
+
+    @Override
+    public ObjCollection<RecipeEntity> getRecipesByTitle(String title) {
+        List<RecipeEntity> recipes = recipesRepository.findByTitleContainingIgnoreCase(title);
+
+        return getCollectionFromList(recipes);
+    }
+
+    @Override
+    public ObjCollection<RecipeEntity> getRecipesByCategory(Long categoryId) {
+        List<RecipeEntity> recipes = recipesRepository.findByCategoryCategoryId(categoryId);
+
+        return getCollectionFromList(recipes);
+    }
+
+    @Override
+    public ObjCollection<RecipeEntity> getRecipesByTitleAndCategory(String title, Long categoryId) {
+        List<RecipeEntity> recipes = recipesRepository.findByTitleContainingIgnoreCaseAndCategoryCategoryId(title, categoryId);
+
+        return getCollectionFromList(recipes);
     }
 
     @Override
@@ -141,5 +147,13 @@ public class RecipeServiceImpl implements RecipeService {
         recipesRepository.delete(recipe);
 
         return recipe;
+    }
+
+    private ObjCollection<RecipeEntity> getCollectionFromList(List<RecipeEntity> recipes) {
+        ObjCollection<RecipeEntity> collection = new RecipesCollection<>();
+        collection.setCollection(recipes);
+        collection.setItemsCount((long) recipes.size());
+
+        return collection;
     }
 }

@@ -9,11 +9,15 @@ import java.util.List;
 
 public interface RecipeService {
 
-    ObjCollection<RecipeEntity> getRecipes(String query);
-
     ObjCollection<RecipeEntity> getRecipes();
 
     RecipeEntity getRecipeByRecipeId(Long recipeId);
+
+    ObjCollection<RecipeEntity> getRecipesByTitle(String title);
+
+    ObjCollection<RecipeEntity> getRecipesByCategory(Long categoryId);
+
+    ObjCollection<RecipeEntity> getRecipesByTitleAndCategory(String title, Long categoryId);
 
     List<RecipeEntity> getLastNRecipes(Integer count);
 

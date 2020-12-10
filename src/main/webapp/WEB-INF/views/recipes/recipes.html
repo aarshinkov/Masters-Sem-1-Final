@@ -19,9 +19,60 @@
     </div>
     <hr/>
 
-    <div id="recipesContainer" class="row"></div>
+    <div class="row">
+        <div class="col-12 col-lg-2">
+            <h5 class="mb-3">Филтър</h5>
+            <h6>Категория</h6>
+            <form id="categoriesForm">
+                <input id="searchTitleHidden" type="hidden" name="t" th:value="${#request.getParameter('t')}"/>
+                <div class="custom-control custom-radio">
+                    <input id="input1" type="radio" class="custom-control-input" name="cat" value="1"
+                           th:checked="${#request.getParameter('cat')} eq 1"/>
+                    <label class="custom-control-label" for="input1">Салати</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input2" type="radio" class="custom-control-input" name="cat" value="2"
+                           th:checked="${#request.getParameter('cat')} eq 2"/>
+                    <label class="custom-control-label" for="input2">Супи</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input3" type="radio" class="custom-control-input" name="cat" value="3"
+                           th:checked="${#request.getParameter('cat')} eq 3"/>
+                    <label class="custom-control-label" for="input3">Разядки</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input4" type="radio" class="custom-control-input" name="cat" value="4"
+                           th:checked="${#request.getParameter('cat')} eq 4"/>
+                    <label class="custom-control-label" for="input4">Предястия</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input5" type="radio" class="custom-control-input" name="cat" value="5"
+                           th:checked="${#request.getParameter('cat')} eq 5"/>
+                    <label class="custom-control-label" for="input5">Основни</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input6" type="radio" class="custom-control-input" name="cat" value="6"
+                           th:checked="${#request.getParameter('cat')} eq 6"/>
+                    <label class="custom-control-label" for="input6">Десерти</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input7" type="radio" class="custom-control-input" name="cat" value="7"
+                           th:checked="${#request.getParameter('cat')} eq 7"/>
+                    <label class="custom-control-label" for="input7">Напитки</label>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-sm btn-primary ml-0">Филтрирай</button>
+                    <button id="resetBtn" type="reset" class="btn btn-sm btn-outline-dark ml-0">Изчисти</button>
+                </div>
+            </form>
+            <hr class="d-block d-lg-none"/>
+        </div>
+        <div class="col-12 col-lg-10">
+            <div id="recipesContainer" class="row"></div>
+        </div>
+    </div>
 
-    <div id="cloner" class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" style="display: none;">
+    <div id="cloner" class="col-12 col-md-6 col-lg-4 mb-4" style="display: none;">
         <div class="card">
             <div class="view overlay">
                 <img id="recipeImage" class="card-img-top" src="#" alt="Card image cap">
@@ -137,42 +188,68 @@
 
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
-        let urlParam = /*[[${param.q}]]*/;
+        let titleParam = /*[[${param.t}]]*/;
+        let catParam = /*[[${param.cat}]]*/;
         let recipeCreateUrl = /*[[@{/api/recipes}]]*/;
         let homeUrl = /*[[@{/}]]*/;
         /*]]>*/
 
-        let requestUrl = "/api/recipes";
+        let recipeUrl = "/api/recipes";
 
-        if (urlParam !== null || urlParam) {
-            requestUrl = "/api/recipes?q=" + urlParam;
+        if (titleParam !== null || titleParam) {
+            recipeUrl = "/api/recipes?t=" + titleParam;
+            if (catParam != null || catParam) {
+                recipeUrl += "&cat=" + catParam;
+            }
+        }
+
+        if (catParam != null || catParam) {
+            recipeUrl = "/api/recipes?cat=" + catParam;
+            if (titleParam != null || titleParam) {
+                recipeUrl += "&t=" + titleParam;
+            }
         }
 
         $.ajax({
-            url: requestUrl,
+            url: recipeUrl,
             method: "GET",
             success: function (data) {
-                data.collection.forEach(function (item) {
-                    let clone = $('#cloner').clone();
-                    clone.removeAttr('id');
-                    clone.removeAttr("style");
-                    clone.find('#recipeImage').attr("src", item.imagePath);
-                    clone.find('#recipeTitle').text(item.title);
-                    clone.find('.recipeLink').attr('href', "/recipe/" + item.recipeId);
-                    if (!item.category) {
-                        clone.find('#recipeCategory').text("Неизвестна");
-                    } else {
-                        clone.find('#recipeCategory').text(item.category.categoryName);
-                    }
-                    clone.find('#recipeCreatedOn').text(formatDate(item.createdOn));
+                if (data.itemsCount === 0) {
+                    $('#recipesContainer').html("<h3>Няма намерени рецепти по тези критерии!</h3>");
+                } else {
+                    let foundMsg = "Намерени " + data.itemsCount + " рецепти";
+                    $('#recipesContainer').html("<div class='col-12 mb-2 font-weight-bold'><h6 class='font-weight-bold'>" + foundMsg + "</h6></div>");
+                    data.collection.forEach(function (item) {
+                        let clone = $('#cloner').clone();
+                        clone.removeAttr('id');
+                        clone.removeAttr("style");
+                        clone.find('#recipeImage').attr("src", item.imagePath);
+                        clone.find('#recipeTitle').text(item.title);
+                        clone.find('.recipeLink').attr('href', "/recipe/" + item.recipeId);
+                        if (!item.category) {
+                            clone.find('#recipeCategory').text("Неизвестна");
+                        } else {
+                            clone.find('#recipeCategory').text(item.category.categoryName);
+                        }
+                        clone.find('#recipeCreatedOn').text(formatDate(item.createdOn));
 
-                    $('#recipesContainer').append(clone);
-                    clone.show();
-                });
+                        $('#recipesContainer').append(clone);
+                        clone.show();
+                    });
+                }
 
                 $('#recipesContainer').removeAttr('id');
             }
-        })
+        });
+
+        $('#searchTitle').keyup(function () {
+            $('#searchTitleHidden').val($('#searchTitle').val());
+        });
+
+        $('#resetBtn').click(function () {
+            $("#categoriesForm input:checked").removeAttr('checked');
+            window.location.href = homeUrl;
+        });
 
         function createRecipe() {
             let title = $("#modalRecipeTitle").val();

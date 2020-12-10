@@ -70,10 +70,11 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         RecipeEntity recipe = new RecipeEntity();
+        recipe.setTitle(rcm.getTitle());
         recipe.setPrepareTime(rcm.getPrepareTime());
         recipe.setCookingTime(rcm.getCookingTime());
         recipe.setPortions(rcm.getPortions());
-        recipe.setTitle(rcm.getTitle());
+        recipe.setIngredients(rcm.getIngredients());
         recipe.setRecipe(rcm.getRecipe());
         recipe.setImagePath(rcm.getImagePath());
         recipe.setUser(user);
@@ -90,11 +91,12 @@ public class RecipeServiceImpl implements RecipeService {
             throw new Exception("Recipe with ID " + rum.getRecipeId() + " does not exist");
         }
 
+        recipe.setTitle(rum.getTitle());
         recipe.setPrepareTime(rum.getPrepareTime());
         recipe.setCookingTime(rum.getCookingTime());
         recipe.setPortions(rum.getPortions());
-        recipe.setTitle(rum.getTitle());
         recipe.setRecipe(rum.getRecipe());
+        recipe.setIngredients(rum.getIngredients());
         recipe.setImagePath(rum.getImagePath());
 
         UserEntity author = usersRepository.findByUserId(rum.getUserId());

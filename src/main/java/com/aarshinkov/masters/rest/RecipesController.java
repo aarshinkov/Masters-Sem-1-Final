@@ -42,7 +42,7 @@ public class RecipesController {
     }
 
     @PutMapping("/recipes")
-    public RecipeEntity updateRecipe(@RequestBody RecipeUpdateModel rum) throws Exception {
+    public RecipeEntity updateRecipe(RecipeUpdateModel rum) throws Exception {
         return recipeService.updateRecipe(rum);
     }
 

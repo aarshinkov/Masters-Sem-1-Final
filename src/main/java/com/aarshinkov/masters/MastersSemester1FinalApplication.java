@@ -1,5 +1,6 @@
 package com.aarshinkov.masters;
 
+import com.aarshinkov.masters.security.Expressions;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -16,5 +17,10 @@ public class MastersSemester1FinalApplication {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    public Expressions expressions() {
+        return new Expressions();
     }
 }

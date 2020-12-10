@@ -45,7 +45,6 @@
         </div>
     </div>
 
-    <!-- Modal -->
     <div class="modal fade" sec:authorize="isAuthenticated()" id="createRecipeModal" tabindex="-1"
          aria-labelledby="createRecipeModalLabel"
          aria-hidden="true">
@@ -88,6 +87,11 @@
                             <label for="modalRecipeImage">Изображение (линк)</label>
                             <input id="modalRecipeImage" type="text" name="imagePath" class="form-control"
                                    required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="modalRecipeIngredients">Съставки</label>
+                            <textarea id="modalRecipeIngredients" name="ingredients" class="form-control"
+                                      required="required"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="modalRecipeRecipe">Рецепта</label>
@@ -153,6 +157,8 @@
             let portions = $("#modalRecipePortions").val();
             let imagePath = $("#modalRecipeImage").val();
             tinyMCE.triggerSave();
+            let ingredients = $("#modalRecipeIngredients").val();
+            tinyMCE.triggerSave();
             let recipe = $("#modalRecipeRecipe").val();
             let userId = $("#modalUserId").val();
 
@@ -162,11 +168,12 @@
                 url: recipeCreateUrl,
                 method: "POST",
                 data: {
+                    title: title,
                     prepareTime: prepareTime,
                     cookingTime: cookingTime,
                     portions: portions,
                     imagePath: imagePath,
-                    title: title,
+                    ingredients: ingredients,
                     recipe: recipe,
                     userId: userId
                 },

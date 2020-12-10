@@ -33,7 +33,10 @@ public class RecipeEntity implements Serializable {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "recipe")
+    @Column(name = "ingredients", length = 600)
+    private String ingredients;
+
+    @Column(name = "recipe", length = 3000)
     private String recipe;
 
     @Column(name = "image_path")

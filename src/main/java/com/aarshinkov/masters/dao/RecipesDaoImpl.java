@@ -46,6 +46,7 @@ public class RecipesDaoImpl implements RecipesDao {
                 recipe.setCookingTime(rset.getInt("cooking_time"));
                 recipe.setPortions(rset.getInt("portions"));
                 recipe.setTitle(rset.getString("title"));
+                recipe.setIngredients(rset.getString("ingredients"));
                 recipe.setRecipe(rset.getString("recipe"));
                 recipe.setImagePath(rset.getString("image_path"));
 

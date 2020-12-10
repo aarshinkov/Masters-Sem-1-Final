@@ -3,17 +3,18 @@ package com.aarshinkov.masters.services;
 import com.aarshinkov.masters.collections.ObjCollection;
 import com.aarshinkov.masters.collections.RecipesCollection;
 import com.aarshinkov.masters.dao.RecipesDao;
+import com.aarshinkov.masters.entities.CategoryEntity;
 import com.aarshinkov.masters.entities.RecipeEntity;
 import com.aarshinkov.masters.entities.UserEntity;
 import com.aarshinkov.masters.models.recipes.RecipeCreateModel;
 import com.aarshinkov.masters.models.recipes.RecipeUpdateModel;
+import com.aarshinkov.masters.repositories.CategoriesRepository;
 import com.aarshinkov.masters.repositories.RecipesRepository;
 import com.aarshinkov.masters.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -27,6 +28,9 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private CategoriesRepository categoriesRepository;
 
     @Override
     public ObjCollection<RecipeEntity> getRecipes(String query) {
@@ -69,8 +73,15 @@ public class RecipeServiceImpl implements RecipeService {
             throw new Exception("User with ID " + rcm.getUserId() + " does not exist");
         }
 
+        CategoryEntity category = categoriesRepository.findByCategoryId(rcm.getCategoryId());
+
+        if (category == null) {
+            throw new Exception("Category with ID " + rcm.getCategoryId() + " does not exist");
+        }
+
         RecipeEntity recipe = new RecipeEntity();
         recipe.setTitle(rcm.getTitle());
+        recipe.setCategory(category);
         recipe.setPrepareTime(rcm.getPrepareTime());
         recipe.setCookingTime(rcm.getCookingTime());
         recipe.setPortions(rcm.getPortions());
@@ -91,7 +102,14 @@ public class RecipeServiceImpl implements RecipeService {
             throw new Exception("Recipe with ID " + rum.getRecipeId() + " does not exist");
         }
 
+        CategoryEntity category = categoriesRepository.findByCategoryId(rum.getCategoryId());
+
+        if (category == null) {
+            throw new Exception("Category with ID " + rum.getCategoryId() + " does not exist");
+        }
+
         recipe.setTitle(rum.getTitle());
+        recipe.setCategory(category);
         recipe.setPrepareTime(rum.getPrepareTime());
         recipe.setCookingTime(rum.getCookingTime());
         recipe.setPortions(rum.getPortions());

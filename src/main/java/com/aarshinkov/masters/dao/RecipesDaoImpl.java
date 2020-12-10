@@ -1,6 +1,8 @@
 package com.aarshinkov.masters.dao;
 
+import com.aarshinkov.masters.entities.CategoryEntity;
 import com.aarshinkov.masters.entities.RecipeEntity;
+import com.aarshinkov.masters.repositories.CategoriesRepository;
 import com.aarshinkov.masters.repositories.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,9 @@ public class RecipesDaoImpl implements RecipesDao {
     private UsersRepository usersRepository;
 
     @Autowired
+    private CategoriesRepository categoriesRepository;
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Override
@@ -42,10 +47,14 @@ public class RecipesDaoImpl implements RecipesDao {
             while (rset.next()) {
                 RecipeEntity recipe = new RecipeEntity();
                 recipe.setRecipeId(rset.getLong("recipe_id"));
+                recipe.setTitle(rset.getString("title"));
+
+                CategoryEntity category = categoriesRepository.findByCategoryId(rset.getLong("category_id"));
+
+                recipe.setCategory(category);
                 recipe.setPrepareTime(rset.getInt("prepare_time"));
                 recipe.setCookingTime(rset.getInt("cooking_time"));
                 recipe.setPortions(rset.getInt("portions"));
-                recipe.setTitle(rset.getString("title"));
                 recipe.setIngredients(rset.getString("ingredients"));
                 recipe.setRecipe(rset.getString("recipe"));
                 recipe.setImagePath(rset.getString("image_path"));

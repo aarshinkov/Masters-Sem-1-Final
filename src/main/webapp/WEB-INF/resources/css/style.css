@@ -12,6 +12,10 @@
   min-width: 25px;
 }
 
+.icon-width-small {
+  min-width: 15px;
+}
+
 .icon-size-1 {
   font-size: 33px;
 }

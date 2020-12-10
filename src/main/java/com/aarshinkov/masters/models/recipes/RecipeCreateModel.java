@@ -11,10 +11,11 @@ import java.io.Serializable;
 @ToString
 public class RecipeCreateModel implements Serializable {
 
+    private String title;
+    private Long categoryId;
     private Integer prepareTime;
     private Integer cookingTime;
     private Integer portions;
-    private String title;
     private String ingredients;
     private String recipe;
     private String imagePath;

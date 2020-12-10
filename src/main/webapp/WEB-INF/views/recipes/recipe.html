@@ -5,7 +5,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{templates/template}">
 <head>
-    <title>Рецепти | Аз и готвенето</title>
+    <title>Рецепти | В хухнята</title>
 </head>
 <body>
 <div layout:fragment="contentDiv">
@@ -14,7 +14,7 @@
             <div class="d-flex align-items-center" sec:authorize="isAuthenticated()">
                 <div class="mr-auto">
                     <h2 class="mb-0 recipeTitle"></h2>
-                    <div>
+                    <div title="Дата на създаване">
                         <small class="far fa-clock"></small>
                         <small class="text-muted mb-0 recipeCreatedOn">Created on</small>
                     </div>
@@ -34,12 +34,12 @@
             <div class="d-flex align-items-end" sec:authorize="!isAuthenticated()">
                 <div class="mr-auto">
                     <h2 class="mb-0 recipeTitle"></h2>
-                    <div class="d-block d-lg-none">
+                    <div class="d-block d-lg-none" title="Дата на създаване">
                         <small class="far fa-clock"></small>
                         <small class="text-muted mb-0 recipeCreatedOn">Created on</small>
                     </div>
                 </div>
-                <div class="d-none d-lg-block">
+                <div class="d-none d-lg-block" title="Дата на създаване">
                     <small class="far fa-clock"></small>
                     <small class="text-muted mb-0 recipeCreatedOn">Created on</small>
                 </div>
@@ -87,10 +87,13 @@
 
             <hr/>
 
-            <h3 class="my-4">Необходими съставки</h3>
-            <div class="font-weight-bold" id="recipeIngredients">Съставки</div>
+            <h5><i>Публикувана в категория <span id="recipeCategoryWrapper"><a id="recipeCategory" href="#"
+                                                                               th:href="@{/}"></a></span></i></h5>
 
-            <h3 class="my-4">Начин на приготвяне</h3>
+            <h4 class="my-4 font-weight-bold">Необходими съставки</h4>
+            <div id="recipeIngredients" class="font-weight-bold">Съставки</div>
+
+            <h4 class="my-4 font-weight-bold">Начин на приготвяне</h4>
             <div id="recipeRecipe">Рецепта</div>
         </div>
         <div class="col-12 col-lg-3">
@@ -165,10 +168,25 @@
                 </div>
                 <div class="modal-body">
                     <form id="recipeCreateForm">
-                        <div class="form-group">
-                            <label for="modalRecipeTitle">Заглавие</label>
-                            <input id="modalRecipeTitle" type="text" name="title" class="form-control"
-                                   required="required"/>
+                        <div class="row">
+                            <div class="form-group col-12 col-lg-6">
+                                <label for="modalRecipeTitle">Заглавие</label>
+                                <input id="modalRecipeTitle" type="text" name="title" class="form-control"
+                                       required="required"/>
+                            </div>
+                            <div class="form-group col-12 col-lg-6">
+                                <label for="modalRecipeCategory">Категория</label>
+                                <select id="modalRecipeCategory" name="categoryId" class="form-control"
+                                        required="required">
+                                    <option value="1">Салати</option>
+                                    <option value="2">Супи</option>
+                                    <option value="3">Разядки</option>
+                                    <option value="4">Предястия</option>
+                                    <option value="5">Основни</option>
+                                    <option value="6">Десерти</option>
+                                    <option value="7">Напитки</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-12 col-lg-4">
@@ -247,7 +265,22 @@
                 $('#recipeCooking').text(data.cookingTime);
                 $('#recipeTotal').text(data.prepareTime + data.cookingTime);
                 $('#recipePortions').text(data.portions);
-                $('#recipeIngredients').html(data.ingredients);
+
+                if (!data.category) {
+                    $('#recipeCategory').remove();
+                    $('#recipeCategoryWrapper').text("Неизвестна");
+                } else {
+                    $('#recipeCategory').text(data.category.categoryName);
+                    let selectedCategoryId = data.category.categoryId;
+                    $('#modalRecipeCategory').val(selectedCategoryId);
+                }
+
+                if (!data.ingredients) {
+                    $('#recipeIngredients').html("Няма записани съставки");
+                } else {
+                    $('#recipeIngredients').html(data.ingredients);
+                }
+
                 $('#recipeRecipe').html(data.recipe);
 
                 $('#modalRecipeTitle').val(data.title);
@@ -260,7 +293,7 @@
             }
         });
 
-        let lastRecipesCount = 3;
+        let lastRecipesCount = 4;
 
         $.ajax({
             url: lastRecipesUrl,
@@ -288,6 +321,7 @@
 
         function updateRecipe() {
             let title = $("#modalRecipeTitle").val();
+            let categoryId = $("#modalRecipeCategory").val();
             let prepareTime = $("#modalRecipePrepare").val();
             let cookingTime = $("#modalRecipeCooking").val();
             let portions = $("#modalRecipePortions").val();
@@ -305,6 +339,7 @@
                 method: "PUT",
                 data: {
                     title: title,
+                    categoryId: categoryId,
                     recipeId: recipeId,
                     prepareTime: prepareTime,
                     cookingTime: cookingTime,

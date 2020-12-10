@@ -47,6 +47,11 @@ public class RecipeEntity implements Serializable {
     @JsonIgnore
     private UserEntity user;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+//    @JsonIgnore
+    private CategoryEntity category;
+
     @CreationTimestamp
     @Column(name = "created_on")
     private Timestamp createdOn;

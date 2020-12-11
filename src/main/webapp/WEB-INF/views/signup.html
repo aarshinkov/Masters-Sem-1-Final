@@ -22,13 +22,13 @@
                     <div class="form-group col-12 col-lg-6">
                         <label for="firstNameInput">Име</label>
                         <input id="firstNameInput" type="text" name="firstName"
-                               class="form-control" required="required" autofocus="autofocus"/>
+                               class="form-control" autofocus="autofocus"/>
                         <span id="firstNameError" class="invalid-feedback"></span>
                     </div>
                     <div class="form-group col-12 col-lg-6">
                         <label for="lastNameInput">Фамилия</label>
                         <input id="lastNameInput" type="text" name="lastName"
-                               class="form-control" required="required"/>
+                               class="form-control"/>
                         <span id="lastNameError" class="invalid-feedback"></span>
                     </div>
                 </div>
@@ -40,14 +40,12 @@
                 <div class="row">
                     <div class="form-group col-12 col-lg-6">
                         <label for="passwordInput">Парола</label>
-                        <input id="passwordInput" type="password" name="password"
-                               class="form-control" required="required"/>
+                        <input id="passwordInput" type="password" name="password" class="form-control"/>
                         <span id="passwordError" class="invalid-feedback"></span>
                     </div>
                     <div class="form-group col-12 col-lg-6">
                         <label for="confirmPasswordInput">Потвърди парола</label>
-                        <input id="confirmPasswordInput" type="password" name="password"
-                               class="form-control" required="required"/>
+                        <input id="confirmPasswordInput" type="password" name="password" class="form-control"/>
                         <span id="confirmPasswordError" class="invalid-feedback"></span>
                     </div>
                 </div>
@@ -67,12 +65,80 @@
         /*<![CDATA[*/
         let signupUrl = /*[[@{/api/users}]]*/;
         let homeUrl = /*[[@{/}]]*/;
+        let loginUrl = /*[[@{/login}]]*/;
         /*]]>*/
+
+        let hasErrors = false;
 
         $('#signupForm').submit(function (e) {
             e.preventDefault();
-            alert("HERE");
+
+            let firstName = $('#firstNameInput').val();
+            let lastName = $('#lastNameInput').val();
+            let email = $('#emailInput').val();
+            let password = $('#passwordInput').val();
+            let confirmPassword = $('#confirmPasswordInput').val();
+
+            removeError('#firstNameInput', '#firstNameError');
+            removeError('#lastNameInput', '#lastNameError');
+            removeError('#emailInput', '#emailError');
+            removeError('#passwordInput', '#passwordError');
+            removeError('#confirmPasswordInput', '#confirmPasswordError');
+
+            if (!firstName) {
+                showError('#firstNameInput', '#firstNameError', "Името не може да бъде празно");
+            }
+            if (!lastName) {
+                showError('#lastNameInput', '#lastNameError', "Фамилията не може да бъде празна");
+            }
+            if (!email) {
+                showError('#emailInput', '#emailError', "Имейлът не може да бъде празен");
+            }
+            if (!password) {
+                showError('#passwordInput', '#passwordError', "Паролата не може да бъде празна");
+            }
+            if (!confirmPassword) {
+                showError('#confirmPasswordInput', '#confirmPasswordError', "Потвърждението на паролата не може да бъде празно");
+            }
+            if (password !== confirmPassword) {
+                showError('#passwordInput', '#passwordError', "Паролите не съвпадат");
+                showError('#confirmPasswordInput', '#confirmPasswordError', "Паролите не съвпадат");
+            }
+
+            if (!hasErrors) {
+                // TODO SIGNUP
+                $.ajax({
+                    url: signupUrl,
+                    method: "POST",
+                    data: {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        password: password
+                    },
+                    success: function (data) {
+                        window.location.href = loginUrl;
+                    },
+                    error: function (error) {
+                    }
+                });
+            }
         });
+
+        function showError(input, errorLabel, error) {
+            $(input).addClass("is-invalid");
+            $(errorLabel).addClass("invalid-feedback");
+            $(errorLabel).text(error);
+            hasErrors = true;
+        }
+
+        function removeError(input, errorLabel) {
+            $(input).removeClass("is-valid");
+            $(input).removeClass("is-invalid");
+            $(errorLabel).removeClass("invalid-feedback");
+            $(errorLabel).text("");
+            hasErrors = false;
+        }
 
         // function signup() {
         //     clearErrorAlert();

@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +23,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserEntity> getUsers() {
@@ -40,9 +45,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new Exception("User with email " + ucm.getEmail() + " already exists.");
         }
 
+        if (ucm.getRoles() == null) {
+            List<String> roles = new ArrayList<>();
+            roles.add("USER");
+            ucm.setRoles(roles);
+        } else {
+            if (ucm.getRoles().size() == 0) {
+                ucm.getRoles().add("USER");
+            }
+        }
+
+
         UserEntity user = new UserEntity();
         user.setEmail(ucm.getEmail());
-        user.setPassword(ucm.getPassword());
+        user.setPassword(passwordEncoder.encode(ucm.getPassword()));
         user.setFirstName(ucm.getFirstName());
         user.setLastName(ucm.getLastName());
 

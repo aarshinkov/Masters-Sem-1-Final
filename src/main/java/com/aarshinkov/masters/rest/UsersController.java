@@ -28,12 +28,12 @@ public class UsersController {
     }
 
     @PostMapping("/users")
-    public UserEntity createUser(@Valid @RequestBody UserCreateModel ucm) throws Exception {
+    public UserEntity createUser(UserCreateModel ucm) throws Exception {
         return userService.createUser(ucm);
     }
 
     @PutMapping("/users")
-    public UserEntity updateUser(@RequestBody UserEditModel uem) throws Exception {
+    public UserEntity updateUser(UserEditModel uem) throws Exception {
         return userService.updateUser(uem);
     }
 

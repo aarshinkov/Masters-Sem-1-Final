@@ -28,6 +28,5 @@ public class UserCreateModel implements Serializable {
     @NotBlank
     private String lastName;
 
-    @NotEmpty
     private List<String> roles;
 }

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer id="footer" class="page-footer font-small orange">
+    <div class="footer-copyright text-center py-3">
+        <span>&copy;</span>
+        <span th:text="${#dates.year(#dates.createNow())}">2020</span>
+        <span>В хухнята. Разработено от</span>
+        <a href="https://github.com/aarshinkov" target="_blank">Атанас Аршинков</a>
+    </div>
+</footer>
+</body>
+</html>

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.dialect.IDialect;
-//import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
+import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
@@ -45,17 +45,17 @@ public class CoreConfiguration implements WebMvcConfigurer {
     }
 
     // диалект за използване на thymeleaf security изрази
-//    @Bean
-//    public SpringSecurityDialect ssd() {
-//        return new SpringSecurityDialect();
-//    }
+    @Bean
+    public SpringSecurityDialect ssd() {
+        return new SpringSecurityDialect();
+    }
 
     // регистриране на диалектите
     @Bean
     public Set<IDialect> additionalDialects() {
         Set<IDialect> additionalDialects = new HashSet<>();
         additionalDialects.add(layoutDialect());
-//        additionalDialects.add(ssd());
+        additionalDialects.add(ssd());
         return additionalDialects;
     }
 

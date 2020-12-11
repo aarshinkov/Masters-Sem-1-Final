@@ -1,53 +1,84 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <body>
-<!--Navbar -->
 <nav id="menu" class="mb-1 navbar navbar-expand-lg navbar-dark amber darken-3">
     <div class="container">
-        <a class="navbar-brand" href="#" th:href="@{/}">Аз и готвенето</a>
+        <a class="navbar-brand" href="#" th:href="@{/}">
+            <i class="fas fa-utensils mr-1"></i>
+            <span>В хухнята</span>
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
                 aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent-333">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item" th:classappend="${globalMenu eq 'home'} ? 'active'">
-                    <a class="nav-link" href="#" th:href="@{/}">
-                        <span>Начало</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
+                <!--                <li class="nav-item" th:classappend="${globalMenu eq 'home'} ? 'active'">-->
+                <!--                    <a class="nav-link" href="#" th:href="@{/}">-->
+                <!--                        <i class="fas fa-home"></i>-->
+                <!--                        <span>Начало</span>-->
+                <!--                    </a>-->
+                <!--                </li>-->
+                <form th:action="@{/}" class="form-inline">
+                    <div class="md-form my-0">
+                        <input id="searchTitle" class="form-control" type="text" size="50" name="t"
+                               th:value="${#request.getParameter('t')}" placeholder="Търси рецепта..."/>
+
+                        <span th:if="${#request.getParameter('cat')} eq null"></span>
+                        <input type="hidden" name="cat" th:value="${#request.getParameter('cat')}"/>
+                    </div>
+                </form>
+                <!--                <li class="nav-item" th:classappend="${globalMenu eq 'recipes'} ? 'active'">-->
+                <!--                    <a class="nav-link" href="#" th:href="@{/}">-->
+                <!--                        <i class="fas fa-utensils"></i>-->
+                <!--                        <span>Рецепти</span>-->
+                <!--                    </a>-->
+                <!--                </li>-->
             </ul>
-            <ul class="navbar-nav ml-auto nav-flex-icons">
-                <li class="nav-item">
-                    <a class="nav-link waves-effect waves-light">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link waves-effect waves-light">
-                        <i class="fab fa-google-plus-g"></i>
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown"
+            <ul class="navbar-nav ml-auto">
+                <div th:remove="tag" sec:authorize="!isAuthenticated()">
+                    <li class="nav-item" th:classappend="${globalMenu eq 'login'} ? 'active'">
+                        <a class="nav-link" href="#" th:href="@{/login}">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Вход</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" th:classappend="${globalMenu eq 'signup'} ? 'active'">
+                        <a class="nav-link" href="#" th:href="@{/signup}">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Регистрация</span>
+                        </a>
+                    </li>
+                </div>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()"
+                    th:classappend="${globalMenu eq 'profile'} ? 'active'">
+                    <a class="nav-link dropdown-toggle" id="userDropdown" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user"></i>
+                        <i class="far fa-user"></i>
+                        <span th:text="${#session.getAttribute('user').fullName}">John Doe</span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-default"
-                         aria-labelledby="navbarDropdownMenuLink-333">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="#" th:href="@{/profile}"
+                           th:classappend="${submenu eq 'profile'} ? 'active'">
+                            <i class="fas fa-user icon-width"></i>
+                            <span>Профил</span>
+                        </a>
+                        <!--                        <a class="dropdown-item" href="#">-->
+                        <!--                            <i class="fas fa-cogs icon-width"></i>-->
+                        <!--                            <span>Настройки</span>-->
+                        <!--                        </a>-->
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="#" th:href="@{/logout}">
+                            <i class="fas fa-sign-out-alt icon-width"></i>
+                            <span>Изход</span>
+                        </a>
                     </div>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-<!--/.Navbar -->
 </body>
 </html>

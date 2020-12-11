@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{templates/template}">
+<head>
+    <title>Профил | В хухнята</title>
+</head>
+<body>
+<div layout:fragment="contentDiv">
+
+    <div class="row">
+        <div class="col-12 col-md-3 mb-4">
+            <div class="list-group list-group-flush">
+                <a href="#" th:href="@{/profile}" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-user icon-width"></i>
+                    <span>Профил</span>
+                </a>
+                <a href="#" th:href="@{/logout}" class="list-group-item list-group-item-action text-danger">
+                    <i class="fas fa-sign-out-alt icon-width"></i>
+                    <span>Изход</span>
+                </a>
+            </div>
+        </div>
+        <div class="col-12 col-md-9">
+            <h2>
+                <i class="far fa-id-card icon-width"></i>
+                <span>Профилна информация</span>
+            </h2>
+            <hr/>
+
+            <div class="row mb-4">
+                <div class="col-12 col-md-3">
+                    <h5 class="font-weight-bold">
+                        <i class="far fa-user icon-width"></i>
+                        <span>Име</span>
+                    </h5>
+                </div>
+                <div class="col-12 col-md-9">
+                    <h5 th:text="${#session.getAttribute('user').firstName}">First name</h5>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-12 col-md-3">
+                    <h5 class="font-weight-bold">
+                        <i class="fas fa-user-alt icon-width"></i>
+                        <span>Фамилия</span>
+                    </h5>
+                </div>
+                <div class="col-12 col-md-9">
+                    <h5 th:text="${#session.getAttribute('user').lastName}">Last name</h5>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-12 col-md-3">
+                    <h5 class="font-weight-bold">
+                        <i class="fas fa-at icon-width"></i>
+                        <span>Имейл</span>
+                    </h5>
+                </div>
+                <div class="col-12 col-md-9">
+                    <h5 th:text="${#session.getAttribute('user').email}">Email</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        let homeUrl = /*[[@{/}]]*/;
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>

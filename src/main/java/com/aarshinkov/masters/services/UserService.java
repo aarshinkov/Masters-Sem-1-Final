@@ -13,5 +13,7 @@ public interface UserService {
 
     UserEntity createUser(UserCreateModel ucm) throws Exception;
 
-    UserEntity editUser(UserEditModel uem) throws Exception;
+    UserEntity updateUser(UserEditModel uem) throws Exception;
+
+    UserEntity deleteUser(Long userId) throws Exception;
 }

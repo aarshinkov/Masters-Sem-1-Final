@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{templates/template}">
+<head>
+    <title>Рецепти | В хухнята</title>
+</head>
+<body>
+<div layout:fragment="contentDiv">
+    <div class="d-flex align-items-center">
+        <h3 class="mb-0 mr-auto">Рецепти</h3>
+        <a sec:authorize="isAuthenticated()" href="@{/recipe/create}" class="btn btn-sm btn-outline-orange"
+           data-toggle="modal" data-target="#createRecipeModal">
+            <i class="fas fa-plus"></i>
+            <span>Нова рецепта</span>
+        </a>
+    </div>
+    <hr/>
+
+    <div class="row">
+        <div class="col-12 col-lg-2">
+            <h5 class="mb-3">Филтър</h5>
+            <h6>Категория</h6>
+            <form id="categoriesForm">
+                <input id="searchTitleHidden" type="hidden" name="t" th:value="${#request.getParameter('t')}"/>
+                <div class="custom-control custom-radio">
+                    <input id="input1" type="radio" class="custom-control-input" name="cat" value="1"
+                           th:checked="${#request.getParameter('cat')} eq 1"/>
+                    <label class="custom-control-label" for="input1">Салати</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input2" type="radio" class="custom-control-input" name="cat" value="2"
+                           th:checked="${#request.getParameter('cat')} eq 2"/>
+                    <label class="custom-control-label" for="input2">Супи</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input3" type="radio" class="custom-control-input" name="cat" value="3"
+                           th:checked="${#request.getParameter('cat')} eq 3"/>
+                    <label class="custom-control-label" for="input3">Разядки</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input4" type="radio" class="custom-control-input" name="cat" value="4"
+                           th:checked="${#request.getParameter('cat')} eq 4"/>
+                    <label class="custom-control-label" for="input4">Предястия</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input5" type="radio" class="custom-control-input" name="cat" value="5"
+                           th:checked="${#request.getParameter('cat')} eq 5"/>
+                    <label class="custom-control-label" for="input5">Основни</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input6" type="radio" class="custom-control-input" name="cat" value="6"
+                           th:checked="${#request.getParameter('cat')} eq 6"/>
+                    <label class="custom-control-label" for="input6">Десерти</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="input7" type="radio" class="custom-control-input" name="cat" value="7"
+                           th:checked="${#request.getParameter('cat')} eq 7"/>
+                    <label class="custom-control-label" for="input7">Напитки</label>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-sm btn-primary ml-0">Филтрирай</button>
+                    <button id="resetBtn" type="reset" class="btn btn-sm btn-outline-dark ml-0">Изчисти</button>
+                </div>
+            </form>
+            <hr class="d-block d-lg-none"/>
+        </div>
+        <div class="col-12 col-lg-10">
+            <div id="recipesContainer" class="row"></div>
+        </div>
+    </div>
+
+    <div id="cloner" class="col-12 col-md-6 col-lg-4 mb-4" style="display: none;">
+        <div class="card">
+            <div class="view overlay">
+                <img id="recipeImage" class="card-img-top" src="#" alt="Card image cap">
+                <a href="#" class="recipeLink">
+                    <div class="mask rgba-white-slight"></div>
+                </a>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a id="recipeTitle" class="text-dark recipeLink" href="#">Title</a>
+                </h5>
+                <div class="card-text mb-2" title="Категория">
+                    <small class="fas fa-th-list icon-width-small"></small>
+                    <small id="recipeCategory" class="text-muted mb-0">Category</small>
+                </div>
+                <div class="card-text mb-2" title="Дата на създаване">
+                    <small class="far fa-clock icon-width-small"></small>
+                    <small id="recipeCreatedOn" class="text-muted mb-0">Created on</small>
+                </div>
+                <a href="#" class="btn main-color-bg btn-sm ml-0 recipeLink">
+                    <i class="fab fa-readme"></i>
+                    <span>Прочети</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" sec:authorize="isAuthenticated()" id="createRecipeModal" tabindex="-1"
+         aria-labelledby="createRecipeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createRecipeModalLabel">Създаване на рецепта</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="recipeCreateForm">
+                        <div class="row">
+                            <div class="form-group col-12 col-lg-6">
+                                <label for="modalRecipeTitle">Заглавие</label>
+                                <input id="modalRecipeTitle" type="text" name="title" class="form-control"
+                                       required="required"/>
+                                <span id="modalRecipeTitleError" class="invalid-feedback"></span>
+                            </div>
+                            <div class="form-group col-12 col-lg-6">
+                                <label for="modalRecipeCategory">Категория</label>
+                                <select id="modalRecipeCategory" name="categoryId" class="form-control"
+                                        required="required">
+                                    <option value="1">Салати</option>
+                                    <option value="2">Супи</option>
+                                    <option value="3">Разядки</option>
+                                    <option value="4">Предястия</option>
+                                    <option value="5">Основни</option>
+                                    <option value="6">Десерти</option>
+                                    <option value="7">Напитки</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="modalRecipePrepare">Време за потготовка (мин)</label>
+                                <input id="modalRecipePrepare" type="number" min="1" name="prepareTime"
+                                       class="form-control" value="10"
+                                       required="required"/>
+                                <span id="modalRecipePrepareError" class="invalid-feedback"></span>
+                            </div>
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="modalRecipeCooking">Време за готвене (мин)</label>
+                                <input id="modalRecipeCooking" type="number" min="1" name="cookingTime"
+                                       class="form-control" value="15"
+                                       required="required"/>
+                                <span id="modalRecipeCookingError" class="invalid-feedback"></span>
+                            </div>
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="modalRecipePortions">Порции (брой)</label>
+                                <input id="modalRecipePortions" type="number" min="1" name="portions"
+                                       class="form-control" value="4"
+                                       required="required"/>
+                                <span id="modalRecipePortionsError" class="invalid-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="modalRecipeImage">Изображение (линк)</label>
+                            <input id="modalRecipeImage" type="text" name="imagePath" class="form-control"
+                                   required="required"/>
+                            <span id="modalRecipeImageError" class="invalid-feedback"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="modalRecipeIngredients">Съставки</label>
+                            <textarea id="modalRecipeIngredients" name="ingredients" class="form-control"
+                                      required="required"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="modalRecipeRecipe">Рецепта</label>
+                            <textarea id="modalRecipeRecipe" class="form-control" name="recipe"
+                                      style="min-height: 400px;"></textarea>
+                        </div>
+                        <input id="modalUserId" type="hidden" name="userId"
+                               th:value="${#session.getAttribute('user').userId}"/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" onclick="createRecipe()" class="btn btn-orange btn-md">
+                        <i class="fas fa-save"></i>
+                        <span>Запази</span>
+                    </a>
+                    <button type="button" class="btn btn-outline-dark btn-md" data-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        <span>Затвори</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        let titleParam = /*[[${param.t}]]*/;
+        let catParam = /*[[${param.cat}]]*/;
+        let recipeCreateUrl = /*[[@{/api/recipes}]]*/;
+        let homeUrl = /*[[@{/}]]*/;
+        /*]]>*/
+
+        let recipeUrl = "/api/recipes";
+
+        if (titleParam !== null || titleParam) {
+            recipeUrl = "/api/recipes?t=" + titleParam;
+            if (catParam != null || catParam) {
+                recipeUrl += "&cat=" + catParam;
+            }
+        }
+
+        if (catParam != null || catParam) {
+            recipeUrl = "/api/recipes?cat=" + catParam;
+            if (titleParam != null || titleParam) {
+                recipeUrl += "&t=" + titleParam;
+            }
+        }
+
+        $.ajax({
+            url: recipeUrl,
+            method: "GET",
+            success: function (data) {
+                if (data.itemsCount === 0) {
+                    $('#recipesContainer').html("<h3>Няма намерени рецепти по тези критерии!</h3>");
+                } else {
+                    let foundMsg = "Намерени " + data.itemsCount + " рецепти";
+                    $('#recipesContainer').html("<div class='col-12 mb-2 font-weight-bold'><h6 class='font-weight-bold'>" + foundMsg + "</h6></div>");
+                    data.collection.forEach(function (item) {
+                        let clone = $('#cloner').clone();
+                        clone.removeAttr('id');
+                        clone.removeAttr("style");
+                        clone.find('#recipeImage').attr("src", item.imagePath);
+                        clone.find('#recipeTitle').text(item.title);
+                        clone.find('.recipeLink').attr('href', "/recipe/" + item.recipeId);
+                        if (!item.category) {
+                            clone.find('#recipeCategory').text("Неизвестна");
+                        } else {
+                            clone.find('#recipeCategory').text(item.category.categoryName);
+                        }
+                        clone.find('#recipeCreatedOn').text(formatDate(item.createdOn));
+
+                        $('#recipesContainer').append(clone);
+                        clone.show();
+                    });
+                }
+
+                $('#recipesContainer').removeAttr('id');
+            }
+        });
+
+        $('#searchTitle').keyup(function () {
+            $('#searchTitleHidden').val($('#searchTitle').val());
+        });
+
+        $('#resetBtn').click(function () {
+            $("#categoriesForm input:checked").removeAttr('checked');
+            window.location.href = homeUrl;
+        });
+
+        function createRecipe() {
+            let title = $("#modalRecipeTitle").val();
+            let categoryId = $("#modalRecipeCategory").val();
+            let prepareTime = $("#modalRecipePrepare").val();
+            let cookingTime = $("#modalRecipeCooking").val();
+            let portions = $("#modalRecipePortions").val();
+            let imagePath = $("#modalRecipeImage").val();
+            tinyMCE.triggerSave();
+            let ingredients = $("#modalRecipeIngredients").val();
+            tinyMCE.triggerSave();
+            let recipe = $("#modalRecipeRecipe").val();
+            let userId = $("#modalUserId").val();
+
+            let hasErrors = false;
+
+            removeError('#modalRecipeTitle', '#modalRecipeTitleError');
+            removeError('#modalRecipePrepare', '#modalRecipePrepareError');
+            removeError('#modalRecipeCooking', '#modalRecipeCookingError');
+            removeError('#modalRecipePortions', '#modalRecipePortionsError');
+            removeError('#modalRecipeImage', '#modalRecipeImageError');
+
+            if (!title || isBlank(title)) {
+                hasErrors = showError('#modalRecipeTitle', '#modalRecipeTitleError', "Заглавието не може да бъде празно");
+            }
+
+            if (!prepareTime) {
+                hasErrors = showError('#modalRecipePrepare', '#modalRecipePrepareError', "Полето е задължително");
+            }
+            if (prepareTime < 0) {
+                hasErrors = showError('#modalRecipePrepare', '#modalRecipePrepareError', "Времето за подготовка не може да бъде отрицателно");
+            }
+
+            if (!cookingTime) {
+                hasErrors = showError('#modalRecipeCooking', '#modalRecipeCookingError', "Полето е задължително");
+            }
+            if (cookingTime < 0) {
+                hasErrors = showError('#modalRecipeCooking', '#modalRecipeCookingError', "Времето за готвене не може да бъде отрицателно");
+            }
+
+            if (!portions) {
+                hasErrors = showError('#modalRecipePortions', '#modalRecipePortionsError', "Полето е задължително");
+            }
+            if (portions < 0) {
+                hasErrors = showError('#modalRecipePortions', '#modalRecipePortionsError', "Броят на порциите не може да бъде отрицателно");
+            }
+
+            if (!imagePath || isBlank(imagePath)) {
+                hasErrors = showError('#modalRecipeImage', '#modalRecipeImageError', "Изображението не може да бъде празно");
+            }
+
+            if (!hasErrors) {
+                $.ajax({
+                    url: recipeCreateUrl,
+                    method: "POST",
+                    data: {
+                        title: title,
+                        categoryId: categoryId,
+                        prepareTime: prepareTime,
+                        cookingTime: cookingTime,
+                        portions: portions,
+                        imagePath: imagePath,
+                        ingredients: ingredients,
+                        recipe: recipe,
+                        userId: userId
+                    },
+                    success: function (result) {
+                        window.location.href = homeUrl;
+                    }
+                });
+            }
+        }
+    </script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            min_height: 500
+        });
+    </script>
+</div>
+</body>
+</html>

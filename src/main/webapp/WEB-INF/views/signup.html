@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{templates/template}">
+<head>
+    <title>Регистрация | В хухнята</title>
+</head>
+<body>
+<div layout:fragment="contentDiv">
+    <div class="row">
+        <div class="col-12">
+            <h3>Регистрация</h3>
+            <hr/>
+        </div>
+        <div class="col-12">
+            <div id="errorAlert" class="alert alert-danger d-none"></div>
+        </div>
+        <div class="col-12">
+            <form id="signupForm">
+                <div class="row">
+                    <div class="form-group col-12 col-lg-6">
+                        <label for="firstNameInput">Име</label>
+                        <input id="firstNameInput" type="text" name="firstName"
+                               class="form-control" autofocus="autofocus"/>
+                        <span id="firstNameError" class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-group col-12 col-lg-6">
+                        <label for="lastNameInput">Фамилия</label>
+                        <input id="lastNameInput" type="text" name="lastName"
+                               class="form-control"/>
+                        <span id="lastNameError" class="invalid-feedback"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="emailInput">Имейл</label>
+                    <input id="emailInput" type="email" class="form-control"/>
+                    <span id="emailError" class="invalid-feedback"></span>
+                </div>
+                <div class="row">
+                    <div class="form-group col-12 col-lg-6">
+                        <label for="passwordInput">Парола</label>
+                        <input id="passwordInput" type="password" name="password" class="form-control"/>
+                        <span id="passwordError" class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-group col-12 col-lg-6">
+                        <label for="confirmPasswordInput">Потвърди парола</label>
+                        <input id="confirmPasswordInput" type="password" name="password" class="form-control"/>
+                        <span id="confirmPasswordError" class="invalid-feedback"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-orange btn-sm ml-0">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Регистрация</span>
+                </button>
+                <span>Вече имате регистрация?</span>
+                <a href="#" th:href="@{/login}" class="ml-0">
+                    <span>Вход</span>
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        let signupUrl = /*[[@{/api/users}]]*/;
+        let homeUrl = /*[[@{/}]]*/;
+        let loginUrl = /*[[@{/login}]]*/;
+        /*]]>*/
+
+        let hasErrors = false;
+
+        $('#signupForm').submit(function (e) {
+            e.preventDefault();
+
+            let firstName = $('#firstNameInput').val();
+            let lastName = $('#lastNameInput').val();
+            let email = $('#emailInput').val();
+            let password = $('#passwordInput').val();
+            let confirmPassword = $('#confirmPasswordInput').val();
+
+            removeError('#firstNameInput', '#firstNameError');
+            removeError('#lastNameInput', '#lastNameError');
+            removeError('#emailInput', '#emailError');
+            removeError('#passwordInput', '#passwordError');
+            removeError('#confirmPasswordInput', '#confirmPasswordError');
+
+            if (!firstName) {
+                hasErrors = showError('#firstNameInput', '#firstNameError', "Името не може да бъде празно");
+            }
+            if (!lastName) {
+                hasErrors = showError('#lastNameInput', '#lastNameError', "Фамилията не може да бъде празна");
+            }
+            if (!email) {
+                hasErrors = showError('#emailInput', '#emailError', "Имейлът не може да бъде празен");
+            }
+            if (!password) {
+                hasErrors = showError('#passwordInput', '#passwordError', "Паролата не може да бъде празна");
+            }
+            if (!confirmPassword) {
+                hasErrors = showError('#confirmPasswordInput', '#confirmPasswordError', "Потвърждението на паролата не може да бъде празно");
+            }
+            if (password !== confirmPassword) {
+                hasErrors = showError('#passwordInput', '#passwordError', "Паролите не съвпадат");
+                hasErrors = showError('#confirmPasswordInput', '#confirmPasswordError', "Паролите не съвпадат");
+            }
+
+            if (!hasErrors) {
+                $.ajax({
+                    url: signupUrl,
+                    method: "POST",
+                    data: {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        password: password
+                    },
+                    success: function (data) {
+                        window.location.href = loginUrl;
+                    },
+                    error: function (error) {
+                    }
+                });
+            }
+        });
+    </script>
+</div>
+</body>
+</html>

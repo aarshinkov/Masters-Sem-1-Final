@@ -86,27 +86,26 @@
             removeError('#confirmPasswordInput', '#confirmPasswordError');
 
             if (!firstName) {
-                showError('#firstNameInput', '#firstNameError', "Името не може да бъде празно");
+                hasErrors = showError('#firstNameInput', '#firstNameError', "Името не може да бъде празно");
             }
             if (!lastName) {
-                showError('#lastNameInput', '#lastNameError', "Фамилията не може да бъде празна");
+                hasErrors = showError('#lastNameInput', '#lastNameError', "Фамилията не може да бъде празна");
             }
             if (!email) {
-                showError('#emailInput', '#emailError', "Имейлът не може да бъде празен");
+                hasErrors = showError('#emailInput', '#emailError', "Имейлът не може да бъде празен");
             }
             if (!password) {
-                showError('#passwordInput', '#passwordError', "Паролата не може да бъде празна");
+                hasErrors = showError('#passwordInput', '#passwordError', "Паролата не може да бъде празна");
             }
             if (!confirmPassword) {
-                showError('#confirmPasswordInput', '#confirmPasswordError', "Потвърждението на паролата не може да бъде празно");
+                hasErrors = showError('#confirmPasswordInput', '#confirmPasswordError', "Потвърждението на паролата не може да бъде празно");
             }
             if (password !== confirmPassword) {
-                showError('#passwordInput', '#passwordError', "Паролите не съвпадат");
-                showError('#confirmPasswordInput', '#confirmPasswordError', "Паролите не съвпадат");
+                hasErrors = showError('#passwordInput', '#passwordError', "Паролите не съвпадат");
+                hasErrors = showError('#confirmPasswordInput', '#confirmPasswordError', "Паролите не съвпадат");
             }
 
             if (!hasErrors) {
-                // TODO SIGNUP
                 $.ajax({
                     url: signupUrl,
                     method: "POST",
@@ -124,83 +123,6 @@
                 });
             }
         });
-
-        function showError(input, errorLabel, error) {
-            $(input).addClass("is-invalid");
-            $(errorLabel).addClass("invalid-feedback");
-            $(errorLabel).text(error);
-            hasErrors = true;
-        }
-
-        function removeError(input, errorLabel) {
-            $(input).removeClass("is-valid");
-            $(input).removeClass("is-invalid");
-            $(errorLabel).removeClass("invalid-feedback");
-            $(errorLabel).text("");
-            hasErrors = false;
-        }
-
-        // function signup() {
-        //     clearErrorAlert();
-        //     let email = $("#emailInput").val();
-        //     let password = $("#passwordInput").val();
-        //     let hasErrors = false;
-        //
-        //     if (email === "") {
-        //         $("#emailInput").addClass("is-invalid");
-        //         $("#emailError").text("Имейлът не може да бъде празен");
-        //         hasErrors = true;
-        //     }
-        //
-        //     if (password === "") {
-        //         $("#passwordInput").addClass("is-invalid");
-        //         $("#passwordError").text("Паролата не може да бъде празна");
-        //         hasErrors = true;
-        //     }
-        //
-        //     if (hasErrors) {
-        //         return;
-        //     }
-        //
-        //     $.ajax({
-        //         url: loginUrl + "?email=" + email + "&password=" + password,
-        //         method: "POST",
-        //         success: function (data) {
-        //             window.location.href = homeUrl;
-        //         },
-        //         error: function (error) {
-        //             clearErrors();
-        //
-        //             $("#passwordInput").val("");
-        //             let code = error.responseJSON.code;
-        //             if (code === 404 || code === 4001) {
-        //                 setErrorAlert("Неправилни имейл/парола");
-        //             // } else if (code === 4001) {
-        //             //     setErrorAlert("Имейлът не е регистриран в системата");
-        //             }
-        //         }
-        //     });
-        // }
-        //
-        // function clearErrorAlert() {
-        //     let selector = $("#errorAlert");
-        //     selector.addClass("d-none");
-        //     selector.text("");
-        // }
-        //
-        // function setErrorAlert(value) {
-        //     let selector = $("#errorAlert");
-        //     selector.removeClass("d-none");
-        //     selector.text(value);
-        // }
-        //
-        // function clearErrors() {
-        //     $("#emailInput").removeClass("is-invalid");
-        //     $("#passwordInput").removeClass("is-invalid");
-        //
-        //     $("#emailError").text("");
-        //     $("#passwordError").text("");
-        // }
     </script>
 </div>
 </body>

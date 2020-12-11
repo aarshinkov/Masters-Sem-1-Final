@@ -173,6 +173,7 @@
                                 <label for="modalRecipeTitle">Заглавие</label>
                                 <input id="modalRecipeTitle" type="text" name="title" class="form-control"
                                        required="required"/>
+                                <span id="modalRecipeTitleError" class="invalid-feedback"></span>
                             </div>
                             <div class="form-group col-12 col-lg-6">
                                 <label for="modalRecipeCategory">Категория</label>
@@ -194,24 +195,28 @@
                                 <input id="modalRecipePrepare" type="number" min="1" name="prepareTime"
                                        class="form-control" value="10"
                                        required="required"/>
+                                <span id="modalRecipePrepareError" class="invalid-feedback"></span>
                             </div>
                             <div class="form-group col-12 col-lg-4">
                                 <label for="modalRecipeCooking">Време за готвене (мин)</label>
                                 <input id="modalRecipeCooking" type="number" min="1" name="cookingTime"
                                        class="form-control" value="15"
                                        required="required"/>
+                                <span id="modalRecipeCookingError" class="invalid-feedback"></span>
                             </div>
                             <div class="form-group col-12 col-lg-4">
                                 <label for="modalRecipePortions">Порции (брой)</label>
                                 <input id="modalRecipePortions" type="number" min="1" name="portions"
                                        class="form-control" value="4"
                                        required="required"/>
+                                <span id="modalRecipePortionsError" class="invalid-feedback"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="modalRecipeImage">Изображение (линк)</label>
                             <input id="modalRecipeImage" type="text" name="imagePath" class="form-control"
                                    required="required"/>
+                            <span id="modalRecipeImageError" class="invalid-feedback"></span>
                         </div>
                         <div class="form-group">
                             <label for="modalRecipeIngredients">Съставки</label>
@@ -281,7 +286,12 @@
                     $('#recipeIngredients').html(data.ingredients);
                 }
 
-                $('#recipeRecipe').html(data.recipe);
+                if (!data.recipe) {
+                    $('#recipeRecipe').html("Няма записана рецепта");
+                } else {
+                    $('#recipeRecipe').html(data.recipe);
+                }
+
 
                 $('#modalRecipeTitle').val(data.title);
                 $('#modalRecipePrepare').val(data.prepareTime);
@@ -332,27 +342,64 @@
             let recipe = $("#modalRecipeRecipe").val();
             let userId = $("#modalUserId").val();
 
-            // TODO VALIDATION
+            let hasErrors = false;
 
-            $.ajax({
-                url: recipeUrl,
-                method: "PUT",
-                data: {
-                    title: title,
-                    categoryId: categoryId,
-                    recipeId: recipeId,
-                    prepareTime: prepareTime,
-                    cookingTime: cookingTime,
-                    portions: portions,
-                    imagePath: imagePath,
-                    ingredients: ingredients,
-                    recipe: recipe,
-                    userId: userId
-                },
-                success: function (result) {
-                    window.location.href = homeUrl + "recipe/" + recipeId;
-                }
-            });
+            removeError('#modalRecipeTitle', '#modalRecipeTitleError');
+            removeError('#modalRecipePrepare', '#modalRecipePrepareError');
+            removeError('#modalRecipeCooking', '#modalRecipeCookingError');
+            removeError('#modalRecipePortions', '#modalRecipePortionsError');
+            removeError('#modalRecipeImage', '#modalRecipeImageError');
+
+            if (!title || isBlank(title)) {
+                hasErrors = showError('#modalRecipeTitle', '#modalRecipeTitleError', "Заглавието не може да бъде празно");
+            }
+
+            if (!prepareTime) {
+                hasErrors = showError('#modalRecipePrepare', '#modalRecipePrepareError', "Полето е задължително");
+            }
+            if (prepareTime < 0) {
+                hasErrors = showError('#modalRecipePrepare', '#modalRecipePrepareError', "Времето за подготовка не може да бъде отрицателно");
+            }
+
+            if (!cookingTime) {
+                hasErrors = showError('#modalRecipeCooking', '#modalRecipeCookingError', "Полето е задължително");
+            }
+            if (cookingTime < 0) {
+                hasErrors = showError('#modalRecipeCooking', '#modalRecipeCookingError', "Времето за готвене не може да бъде отрицателно");
+            }
+
+            if (!portions) {
+                hasErrors = showError('#modalRecipePortions', '#modalRecipePortionsError', "Полето е задължително");
+            }
+            if (portions < 0) {
+                hasErrors = showError('#modalRecipePortions', '#modalRecipePortionsError', "Броят на порциите не може да бъде отрицателно");
+            }
+
+            if (!imagePath || isBlank(imagePath)) {
+                hasErrors = showError('#modalRecipeImage', '#modalRecipeImageError', "Изображението не може да бъде празно");
+            }
+
+            if (!hasErrors) {
+                $.ajax({
+                    url: recipeUrl,
+                    method: "PUT",
+                    data: {
+                        title: title,
+                        categoryId: categoryId,
+                        recipeId: recipeId,
+                        prepareTime: prepareTime,
+                        cookingTime: cookingTime,
+                        portions: portions,
+                        imagePath: imagePath,
+                        ingredients: ingredients,
+                        recipe: recipe,
+                        userId: userId
+                    },
+                    success: function (result) {
+                        window.location.href = homeUrl + "recipe/" + recipeId;
+                    }
+                });
+            }
         }
 
         function deleteRecipe() {

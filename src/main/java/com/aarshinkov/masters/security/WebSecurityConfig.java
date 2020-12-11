@@ -2,6 +2,7 @@ package com.aarshinkov.masters.security;
 
 import com.aarshinkov.masters.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,6 +32,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").anonymous()
                 .antMatchers("/signup").anonymous()
                 .antMatchers("/profile").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/recipes").authenticated()
+                .antMatchers(HttpMethod.PUT, "/api/recipes").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/recipes/**").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/users").anonymous()
+                .antMatchers(HttpMethod.PUT, "/api/users").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/users/**").authenticated()
                 .and()
                 .formLogin().loginPage("/login")
                 .and()

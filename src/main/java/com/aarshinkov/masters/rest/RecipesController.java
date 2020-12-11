@@ -6,8 +6,10 @@ import com.aarshinkov.masters.models.recipes.RecipeCreateModel;
 import com.aarshinkov.masters.models.recipes.RecipeUpdateModel;
 import com.aarshinkov.masters.services.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -54,12 +56,14 @@ public class RecipesController {
     }
 
     @PutMapping("/recipes")
-    public RecipeEntity updateRecipe(RecipeUpdateModel rum) throws Exception {
+    @PreAuthorize("@expressions.isUserAuthor(#request, #rum.recipeId)")
+    public RecipeEntity updateRecipe(RecipeUpdateModel rum, HttpServletRequest request) throws Exception {
         return recipeService.updateRecipe(rum);
     }
 
     @DeleteMapping("/recipes/{recipeId}")
-    public RecipeEntity deleteRecipe(@PathVariable("recipeId") Long recipeId) throws Exception {
+    @PreAuthorize("@expressions.isUserAuthor(#request, #recipeId)")
+    public RecipeEntity deleteRecipe(@PathVariable("recipeId") Long recipeId, HttpServletRequest request) throws Exception {
         return recipeService.deleteRecipe(recipeId);
     }
 }
